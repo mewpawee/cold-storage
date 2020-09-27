@@ -1,22 +1,65 @@
 import mongoose from "mongoose";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    username:{
-      type: String,
-      required: true,
-      unique: true,
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: { type: String, required: true },
+  trucks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "usersTruck",
     },
-    password:{type: String, required: true,},
+  ],
 });
 
-userSchema.pre('save', function(){
-    const hashedPassword = bcrypt.hashSync(this.password, 11);
-    this.password = hashedPassword;
-  });
+userSchema.pre("save", function () {
+  const hashedPassword = bcrypt.hashSync(this.password, 11);
+  this.password = hashedPassword;
+});
 
-const User = mongoose.model("user", userSchema, "user");
+const usersTruckSchema = new Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  truckId: { type: String, required: true },
+  trucksData: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "trucksData",
+    },
+  ],
+});
 
-export default User;
+const trucksDataSchema = new Schema({
+  truck: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "usersTruck",
+    require: true,
+  },
+  date: { type: Date, required: true },
+  temp: { type: Number, required: true },
+  lat: { type: Number, required: true },
+  lng: { type: Number, required: true },
+});
+
+export const User = mongoose.model("user", userSchema, "user");
+export const UsersTruck = mongoose.model(
+  "usersTruck",
+  usersTruckSchema,
+  "usersTruck"
+);
+export const TrucksData = mongoose.model(
+  "trucksData",
+  trucksDataSchema,
+  "trucksData"
+);
+
+export default { User, UsersTruck, TrucksData };

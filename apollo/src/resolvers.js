@@ -1,10 +1,9 @@
-import Truck from "./models/DeviceModel";
-import User from "./models/UserModel";
+import { User, UsersTruck, TrucksData } from "./models/UserModel";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { AuthenticationError } from "apollo-server";
 
-const addDate = () => {
+const getDate = () => {
   return new Promise((resolve, reject) => {
     const date = new Date().toUTCString();
     resolve(date);
@@ -41,11 +40,10 @@ export default {
         token,
       };
     },
-
-    trucks: async () => {
-      trucks = await Truck.find();
-      return trucks;
-    },
+    trucksData: async(parent,{_id},info)=>{
+      const trucksData = await TrucksData.find({ truck: _id }).exec();
+      return trucksData;
+    }
   },
 
   Mutation: {
@@ -53,11 +51,26 @@ export default {
       const user = await User.create({ username, password });
       return user;
     },
-    createTruck: async (root, { input }) => {
-      await addDate().then((date) => {
-        input.date = date;
-      });
-      return await Truck.create(input);
+    addUsersTruck: async (parent, { truckId }, { me }, info) => {
+      return await UsersTruck.create({ user: me._id, truckId });
+    },
+    addTrucksData: async (parent, { id, temp, lat, lng }, _, info) => {
+      const date = await getDate();
+      return await TrucksData.create({ truck: id, date, temp, lat, lng });
+    },
+  },
+
+  User: {
+    trucks: async ({ _id }, args, _, info) => {
+      const trucks = await UsersTruck.find({ user: _id }).exec();
+      return trucks;
+    },
+  },
+
+  UsersTruck: {
+    trucksData: async ({ _id }, args, _, info) => {
+      const trucksData = await TrucksData.find({ truck: _id }).exec();
+      return trucksData;
     },
   },
 };
