@@ -12,7 +12,11 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="dialogLogin" max-width="290">
+    <v-dialog
+      background="rgba(33, 33, 33, 0.50)"
+      v-model="dialogLogin"
+      max-width="290"
+    >
       <v-text-field v-model="usernameLogin" label="Username"></v-text-field>
       <v-text-field
         v-model="passwordLogin"
@@ -20,9 +24,17 @@
         type="password"
       ></v-text-field>
       <v-btn @click="handleLoginClicked"> Login </v-btn>
+      <v-alert v-model="errorLogin" dismissible type="error">
+        Username or Password was wrong, please try again.
+      </v-alert>
     </v-dialog>
 
-    <v-dialog v-model="dialogSignup" max-width="290">
+    <v-dialog
+      background="rgba(33, 33, 33, 0.50)"
+      v-model="dialogSignup"
+      max-width="290"
+      dark
+    >
       <v-text-field v-model="usernameSignup" label="Username"></v-text-field>
       <v-text-field
         v-model="passwordSignup"
@@ -30,6 +42,12 @@
         type="password"
       ></v-text-field>
       <v-btn @click="handleSignupClicked"> Signup </v-btn>
+      <v-alert v-model="successSignup" dismissible type="success">
+        Signup Success!
+      </v-alert>
+      <v-alert v-model="errorSignup" dismissible type="error">
+        this username already exist. Please use other username.
+      </v-alert>
     </v-dialog>
   </v-app-bar>
 </template>
@@ -44,7 +62,10 @@ export default {
       usernameLogin: '',
       passwordLogin: '',
       usernameSignup: '',
-      passwordSignup: ''
+      passwordSignup: '',
+      errorLogin: false,
+      successSignup: false,
+      errorSignup: false
     }
   },
   mounted() {
@@ -70,6 +91,7 @@ export default {
           this.$router.replace({ name: 'dashboard' })
         }
       } catch (err) {
+        this.errorLogin = true
         console.log(err)
       }
     },
@@ -80,7 +102,14 @@ export default {
           this.passwordSignup
         )
         console.log(response)
+        if (response.errors) {
+          this.errorSignup = true
+        }
+        if (response.data) {
+          this.successSignup = true
+        }
       } catch (err) {
+        this.errorSignup = true
         console.log(err)
       }
     }
