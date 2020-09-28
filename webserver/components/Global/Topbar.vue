@@ -6,6 +6,9 @@
     <v-toolbar-title v-text="title" />
     <v-spacer />
     <v-toolbar-title v-text="user" />
+    <v-btn icon @click.stop="signOut">
+      <v-icon>mdi-export</v-icon>
+    </v-btn>
     <v-btn icon @click.stop="rightDrawerToggle">
       <v-icon>mdi-menu</v-icon>
     </v-btn>
@@ -31,6 +34,9 @@ export default {
     this.user = 'Welcome, ' + this.$nuxt.$auth.user.username + '!'
   },
   methods: {
+    signOut() {
+      this.$auth.logout('local')
+    },
     miniVariantToggle() {
       this.$store.commit(
         'set_minivariant',

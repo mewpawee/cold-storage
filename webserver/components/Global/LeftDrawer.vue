@@ -3,7 +3,7 @@
     :mini-variant="miniVariant"
     :clipped="clipped"
     :fixed="fixed"
-    permanent
+    app
   >
     <v-list>
       <v-list-item

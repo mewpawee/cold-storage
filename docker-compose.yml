@@ -4,14 +4,16 @@ services:
   webserver:
     container_name: webserver
     build: "./webserver"
+    environment:
+      HOST: localhost
     ports:
       - 80:3000
-    depends_on: 
+    depends_on:
       - apollo
   apollo:
     container_name: apollo
     build: "./apollo"
-    environment: 
+    environment:
       DB_USERNAME: root
       DB_PASSWORD: rootpassword
       DB_NAME: USER

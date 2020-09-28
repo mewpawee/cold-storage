@@ -1,4 +1,5 @@
 const colors = require('vuetify/es5/util/colors').default
+const host = process.env.HOST
 const userRequest = {
   query: `{
    user{
@@ -67,7 +68,7 @@ module.exports = {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'http://apollo:4000/graphql',
+        httpEndpoint: `http://${host}:4000/graphql`,
         httpLinkOptions: {
           credentials: 'same-origin'
         }
@@ -82,13 +83,13 @@ module.exports = {
       local: {
         endpoints: {
           login: {
-            url: 'http://127.0.0.1:4000/graphql',
+            url: `http://${host}:4000/graphql`,
             method: 'post',
             propertyName: 'data.login.token'
           },
           logout: false,
           user: {
-            url: 'http://127.0.0.1:4000/graphql',
+            url: `http://${host}:4000/graphql`,
             method: 'post',
             data: userRequest,
             propertyName: 'data.user'
@@ -133,5 +134,8 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  publicRuntimeConfig: {
+    host: process.env.HOST
   }
 }
