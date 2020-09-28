@@ -2,8 +2,8 @@
   <v-navigation-drawer
     v-model="rightDrawer"
     :right="true"
-    :clipped="clipped"
-    :fixed="fixed"
+    :clipped="false"
+    :fixed="true"
     app
   >
     <v-list disabled>

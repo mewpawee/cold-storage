@@ -1,6 +1,5 @@
 <template>
   <v-app-bar clipped-left fixed app>
-    <v-app-bar-nav-icon @click.stop="leftDrawerToggle" />
     <v-btn icon @click.stop="miniVariantToggle">
       <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
     </v-btn>
@@ -37,9 +36,6 @@ export default {
         'set_minivariant',
         !this.$nuxt.$store.state.miniVariant
       )
-    },
-    leftDrawerToggle() {
-      this.$store.commit('set_left_drawer', !this.$nuxt.$store.state.leftDrawer)
     },
     rightDrawerToggle() {
       this.$store.commit(

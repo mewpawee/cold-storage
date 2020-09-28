@@ -1,56 +1,37 @@
 <template lang="html">
-  <div>
-    <v-btn color="primary" dark @click.stop="dialog = true">
-      Login
-    </v-btn>
-
-    <v-btn color="primary" dark @click.stop="dialog = true">
-      Sign Up
-    </v-btn>
-
-    <v-dialog v-model="dialog" max-width="290">
-      <v-text-field v-model="email" label="Email"></v-text-field>
-      <v-text-field
-        v-model="password"
-        label="Password"
-        type="password"
-      ></v-text-field>
-      <v-btn @click="handleLoginClicked"> Login </v-btn>
-    </v-dialog>
-  </div>
+  <v-carousel v-model="model">
+    <v-carousel-item v-for="(item, i) in items" :key="i" :src="item.src">
+      <v-row class="fill-height" align="center" justify="center">
+        <div class="display-3">Slide {{ i + 1 }}</div>
+      </v-row>
+    </v-carousel-item>
+  </v-carousel>
 </template>
 
 <script>
+import truck1 from '@/static/carousel/truck-carousel-1.jpg'
+import truck2 from '@/static/carousel/truck-carousel-2.jpg'
+import truck3 from '@/static/carousel/truck-carousel-3.jpg'
 export default {
   layout: 'session',
-  data() {
-    return {
-      dialog: false,
-      email: '',
-      password: ''
-    }
-  },
-  methods: {
-    async handleLoginClicked() {
-      try {
-        const body = {
-          query: `{
-           login(username:"${this.username}",password:"${this.password}"){
-             token
-           }
-         }`
-        }
-        const response = await this.$auth.loginWith('local', {
-          data: body
-        })
-        console.log(response.data)
-      } catch (err) {
-        console.log('asdf')
-        console.log(err)
+  data: () => ({
+    model: 0,
+    items: [
+      {
+        src: truck1
+      },
+      {
+        src: truck2
+      },
+      {
+        src: truck3
       }
+    ]
+  }),
+  mounted() {
+    if (this.$auth.loggedIn) {
+      this.$router.replace({ name: 'dashboard' })
     }
   }
 }
 </script>
-
-<style lang="css" scoped></style>
