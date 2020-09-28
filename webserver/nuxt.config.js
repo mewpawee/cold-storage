@@ -61,6 +61,9 @@ module.exports = {
     '@nuxtjs/apollo',
     'nuxt-leaflet'
   ],
+  router: {
+    middleware: ['auth']
+  },
   apollo: {
     clientConfigs: {
       default: {
@@ -73,7 +76,7 @@ module.exports = {
   },
   auth: {
     redirect: {
-      login: '/login'
+      login: '/'
     },
     strategies: {
       local: {
@@ -83,10 +86,7 @@ module.exports = {
             method: 'post',
             propertyName: 'data.login.token'
           },
-          logout: {
-            url: 'https://sakko-demo-api.herokuapp.com/api/v1/user/sign_out',
-            method: 'delete'
-          },
+          logout: false,
           user: {
             url: 'http://127.0.0.1:4000/graphql',
             method: 'post',
@@ -95,7 +95,7 @@ module.exports = {
           }
         },
         tokenName: 'token',
-        //autoFetchUser: false
+        autoFetchUser: true
       }
     }
   },

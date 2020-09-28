@@ -1,10 +1,9 @@
 <template>
   <v-navigation-drawer
-    v-model="leftDrawer"
     :mini-variant="miniVariant"
     :clipped="clipped"
     :fixed="fixed"
-    app
+    permanent
   >
     <v-list>
       <v-list-item
@@ -41,30 +40,11 @@ export default {
           icon: 'mdi-group',
           title: 'Groups',
           to: { name: 'groups' }
-        },
-
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Manga Search',
-          to: '/manga/search'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Users',
-          to: { name: 'users' }
         }
       ]
     }
   },
   computed: {
-    leftDrawer: {
-      get() {
-        return this.$nuxt.$store.state.leftDrawer
-      },
-      set(val) {
-        this.$store.commit('set_left_drawer', val)
-      }
-    },
     miniVariant: {
       get() {
         return this.$nuxt.$store.state.miniVariant

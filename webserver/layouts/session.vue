@@ -1,5 +1,6 @@
 <template>
   <v-app dark>
+    <Topbar />
     <v-main>
       <v-container>
         <nuxt />
@@ -9,5 +10,10 @@
 </template>
 
 <script>
-export default {}
+import Topbar from '@/components/Session/Topbar'
+export default {
+  components: {
+    Topbar
+  }
+}
 </script>

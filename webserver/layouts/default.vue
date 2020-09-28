@@ -1,7 +1,7 @@
 <template>
   <v-app dark>
-    <LeftDrawer />
     <Topbar />
+    <LeftDrawer />
     <v-main>
       <v-container>
         <nuxt />
