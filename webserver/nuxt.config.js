@@ -89,13 +89,13 @@ module.exports = {
       local: {
         endpoints: {
           login: {
-            url: `http://${host}/graphql`,
+            url: `/`,
             method: 'post',
             propertyName: 'data.login.token'
           },
           logout: false,
           user: {
-            url: `http://${host}/graphql`,
+            url: `/`,
             method: 'post',
             data: userRequest,
             propertyName: 'data.user'
@@ -110,7 +110,9 @@ module.exports = {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    baseURL: '/graphql',
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
