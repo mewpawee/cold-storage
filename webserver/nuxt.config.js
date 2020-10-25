@@ -89,13 +89,13 @@ module.exports = {
       local: {
         endpoints: {
           login: {
-            url: `/graphql`,
+            url: `http://${host}/graphql`,
             method: 'post',
             propertyName: 'data.login.token'
           },
           logout: false,
           user: {
-            url: `/graphql`,
+            url: `http://${host}/graphql`,
             method: 'post',
             data: userRequest,
             propertyName: 'data.user'
