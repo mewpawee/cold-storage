@@ -1,5 +1,5 @@
 const colors = require('vuetify/es5/util/colors').default
-const host = process.env.HOST
+host = process.env.HOST
 const userRequest = {
   query: `{
    user{
@@ -10,6 +10,12 @@ const userRequest = {
 }
 
 module.exports = {
+  serverMiddleware: [
+    {
+      path: 'graphql',
+      handler: '~/api/graphql.js'
+    }
+  ],
   server: {
     port: process.env.PORT || 3000,
     host: '0.0.0.0'
@@ -68,7 +74,7 @@ module.exports = {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: `http://${host}:4000/graphql`,
+        httpEndpoint: `/graphql`,
         httpLinkOptions: {
           credentials: 'same-origin'
         }
@@ -83,13 +89,13 @@ module.exports = {
       local: {
         endpoints: {
           login: {
-            url: `http://${host}:4000/graphql`,
+            url: `http://${host}/graphql`,
             method: 'post',
             propertyName: 'data.login.token'
           },
           logout: false,
           user: {
-            url: `http://${host}:4000/graphql`,
+            url: `http://${host}/graphql`,
             method: 'post',
             data: userRequest,
             propertyName: 'data.user'
