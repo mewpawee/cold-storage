@@ -3,15 +3,18 @@ version: "3.8"
 services:
   webserver:
     container_name: webserver
+    restart: always
     build: "./webserver"
     environment:
       HOST: localhost
+      PORT: 80
     ports:
-      - 80:3000
+      - 80:80
     depends_on:
       - apollo
   apollo:
     container_name: apollo
+    restart: always
     build: "./apollo"
     environment:
       DB_USERNAME: root
@@ -24,6 +27,7 @@ services:
       - database
   database:
     container_name: database
+    restart: always
     image: mongo:latest
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
