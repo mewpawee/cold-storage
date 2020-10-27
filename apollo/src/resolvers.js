@@ -40,10 +40,10 @@ export default {
         token,
       };
     },
-    trucksData: async(parent,{_id},info)=>{
+    trucksData: async (parent, { _id }, info) => {
       const trucksData = await TrucksData.find({ truck: _id }).exec();
       return trucksData;
-    }
+    },
   },
 
   Mutation: {
@@ -51,12 +51,12 @@ export default {
       const user = await User.create({ username, password });
       return user;
     },
-    addUsersTruck: async (parent, { truckId }, { me }, info) => {
-      return await UsersTruck.create({ user: me._id, truckId });
+    addUsersTruck: async (parent, { truckName }, { me }, info) => {
+      return await UsersTruck.create({ user: me._id, truckName });
     },
-    addTrucksData: async (parent, { id, temp, lat, lng }, _, info) => {
+    addTrucksData: async (parent, { truckId, temp, lat, lng }, _, info) => {
       const date = await getDate();
-      return await TrucksData.create({ truck: id, date, temp, lat, lng });
+      return await TrucksData.create({ truck: truckId, date, temp, lat, lng });
     },
   },
 

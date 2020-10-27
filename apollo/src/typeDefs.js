@@ -16,7 +16,7 @@ export default gql`
   type UsersTruck {
     _id: ID!
     user: User!
-    truckId: String!
+    truckName: String!
     trucksData: [TrucksData]
   }
 
@@ -37,7 +37,7 @@ export default gql`
 
   type Mutation {
     createUser(username: String!, password: String!): User!
-    addUsersTruck(truckId: String!): UsersTruck!
+    addUsersTruck(truckName: String!): UsersTruck!
     addTrucksData(
       truckId: String!
       date: Date

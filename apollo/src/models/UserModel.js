@@ -29,7 +29,7 @@ const usersTruckSchema = new Schema({
     ref: "user",
     required: true,
   },
-  truckId: { type: String, required: true },
+  truckName: { type: String, required: true},
   trucksData: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,7 +42,7 @@ const trucksDataSchema = new Schema({
   truck: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "usersTruck",
-    require: true,
+    required: true,
   },
   date: { type: Date, required: true },
   temp: { type: Number, required: true },

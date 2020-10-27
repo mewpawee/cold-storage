@@ -1,36 +1,31 @@
 <template lang="html">
   <div class="d-flex flex-wrap">
-    <v-card
-      v-for="device in devices"
-      :key="device._id"
-      class="mx-auto"
-      max-width="344"
-      outlined
-    >
-      <li>{{ device._id }}</li>
-      <li>{{ device.owner }}</li>
-      <li>{{ device.provider }}</li>
-      <li>{{ device.value }}</li>
-    </v-card>
+    <p v-if="$fetchState.pending">Fetching...</p>
+    <p v-else-if="$fetchState.error">An error occurred :(</p>
+    <div v-else>
+      <v-card
+        v-for="truck in results.data.user.trucks"
+        :key="truck._id"
+        class="mx-auto"
+        max-width="344"
+        outlined
+      >
+        <li>{{ truck._id }}</li>
+      </v-card>
+    </div>
   </div>
 </template>
 
 <script>
-import gql from 'graphql-tag'
+import { getUserInfo } from '@/utils/userApi'
 export default {
-  apollo: {
-    devices: gql`
-      {
-        devices {
-          _id
-          owner
-          value
-          provider
-        }
-      }
-    `
+  data() {
+    return {
+      results: []
+    }
+  },
+  async fetch() {
+    this.results = await getUserInfo()
   }
 }
 </script>
-
-<style lang="css" scoped></style>
