@@ -11,3 +11,22 @@ export function createUser(username, password) {
   }
   return request('POST', url, body, false)
 }
+
+export function getUserInfo() {
+  const url = `/graphql`
+  const body = {
+    query: `{
+      user{
+        trucks{
+          _id
+          trucksData{
+            _id
+            date
+            temp
+          }
+        }
+      }
+    }`
+  }
+  return request('POST', url, body, true)
+}
