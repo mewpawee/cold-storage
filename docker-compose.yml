@@ -12,6 +12,11 @@ services:
       - 80:80
     depends_on:
       - apollo
+    volumes:
+      - type: bind
+        source: ./webserver
+        target: /usr/src/app
+        read_only: false
   apollo:
     container_name: apollo
     restart: always
