@@ -6,20 +6,29 @@
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         ></l-tile-layer>
         <l-geo-json :geojson="geojson"></l-geo-json>
-        <l-marker
-          v-for="(truck, i) in trucks"
-          :key="i"
-          :lat-lng="[truck.lat, truck.lng]"
-          @click="onMarkerClicked(truck)"
-        >
-          <l-icon
-            :key="i"
-            :icon-size="[40, 40]"
-            :icon-anchor="[20, 40]"
-            icon-url="/truck.svg"
-          />
-          <l-popup>{{ selectedTruck.id }}</l-popup>
-        </l-marker>
+        <p v-if="$fetchState.pending">Fetching...</p>
+        <p v-else-if="$fetchState.error">An error occurred :(</p>
+        <div v-else>
+          <div v-for="truck in results.data.user.trucks" :key="truck._id">
+            <div>
+              <l-marker
+                v-if="
+                  truck.trucksData && Object.keys(truck.trucksData).length > 0
+                "
+                :lat-lng="[truck.trucksData[0].lat, truck.trucksData[0].lng]"
+                @click="onMarkerClicked(truck)"
+              >
+                <l-icon
+                  :key="truck._id"
+                  :icon-size="[40, 40]"
+                  :icon-anchor="[20, 40]"
+                  icon-url="/truck.svg"
+                />
+                <l-popup>{{ selectedTruck.name }}</l-popup>
+              </l-marker>
+            </div>
+          </div>
+        </div>
       </l-map>
     </no-ssr>
   </div>
@@ -27,11 +36,18 @@
 
 <script>
 import thaiBorder from '@/static/thaiBorder.json'
+import { getUserInfo } from '@/utils/userApi'
 export default {
   middleware: 'auth',
+  async fetch() {
+    this.results = await getUserInfo()
+    console.log(this.results.data.user.trucks)
+    console.log(Object.keys(this.results.data.user.trucks[1].trucksData).length)
+  },
   data() {
     return {
       selectedTruck: {},
+      results: [],
       trucks: [
         {
           truckId: 'Hello',

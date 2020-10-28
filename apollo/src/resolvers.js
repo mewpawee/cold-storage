@@ -40,7 +40,10 @@ export default {
         token,
       };
     },
-    trucksData: async (parent, { _id }, info) => {
+    trucksData: async (parent, { _id }, { me }, info) => {
+      if (!me) {
+        throw new AuthenticationError("You are not authenticated");
+      }
       const trucksData = await TrucksData.find({ truck: _id }).exec();
       return trucksData;
     },
@@ -52,6 +55,9 @@ export default {
       return user;
     },
     addUsersTruck: async (parent, { truckName }, { me }, info) => {
+      if (!me) {
+        throw new AuthenticationError("You are not authenticated");
+      }
       return await UsersTruck.create({ user: me._id, truckName });
     },
     addTrucksData: async (parent, { truckId, temp, lat, lng }, _, info) => {

@@ -18,9 +18,10 @@ export const mutations = {
     state.rightDrawer = newRightDrawerState
   },
   set_truck_info(state, newTruckInfo) {
-    state.truck.id = newTruckInfo.truckId
-    state.truck.temp = newTruckInfo.temp
-    state.truck.lat = newTruckInfo.lat
-    state.truck.lng = newTruckInfo.lng
+    state.truck.id = newTruckInfo._id
+    state.truck.name = newTruckInfo.truckName
+    state.truck.temp = newTruckInfo.trucksData[0].temp
+    state.truck.lat = newTruckInfo.trucksData[0].lat
+    state.truck.lng = newTruckInfo.trucksData[0].lng
   }
 }

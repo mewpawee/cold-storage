@@ -6,9 +6,15 @@
     :fixed="true"
     app
   >
+    <v-toolbar-title>{{ truck.name }}</v-toolbar-title>
     <v-list disabled>
-      <v-subheader>{{ truck.id }}</v-subheader>
       <v-divider />
+      <v-list-item>
+        <v-list-item-content>ID: </v-list-item-content>
+        <v-list-item-content class="align-end">{{
+          truck.id
+        }}</v-list-item-content>
+      </v-list-item>
       <v-list-item>
         <v-list-item-content>Temp: </v-list-item-content>
         <v-list-item-content class="align-end">{{
