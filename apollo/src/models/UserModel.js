@@ -10,10 +10,10 @@ const userSchema = new Schema({
     unique: true,
   },
   password: { type: String, required: true },
-  trucks: [
+  groups: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "usersTruck",
+      ref: "userGroup",
     },
   ],
 });
@@ -23,43 +23,54 @@ userSchema.pre("save", function () {
   this.password = hashedPassword;
 });
 
-const usersTruckSchema = new Schema({
+const userGroupSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
     required: true,
   },
-  truckName: { type: String, required: true},
-  trucksData: [
+  groupName: { type: String, required: true },
+  data: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "trucksData",
+      ref: "groupData",
     },
   ],
 });
 
-const trucksDataSchema = new Schema({
-  truck: {
+const groupDataSchema = new Schema({
+  group: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "usersTruck",
+    ref: "userGroup",
     required: true,
   },
   date: { type: Date, required: true },
-  temp: { type: Number, required: true },
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
+  devices: [{ type: mongoose.Schema.Types.ObjectId, ref: "device" }],
+});
+
+const deviceSchema = new Schema({
+  groupData: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "groupData",
+    required: true,
+  },
+  deviceId: { type: String, required: true },
+  temp: { type: Number, required: true },
 });
 
 export const User = mongoose.model("user", userSchema, "user");
-export const UsersTruck = mongoose.model(
-  "usersTruck",
-  usersTruckSchema,
-  "usersTruck"
+export const UserGroup = mongoose.model(
+  "userGroup",
+  userGroupSchema,
+  "userGroup"
 );
-export const TrucksData = mongoose.model(
-  "trucksData",
-  trucksDataSchema,
-  "trucksData"
+export const GroupData = mongoose.model(
+  "groupData",
+  groupDataSchema,
+  "groupData"
 );
+export const Device = mongoose.model("device", deviceSchema, "device");
 
-export default { User, UsersTruck, TrucksData };
+export default { User, UserGroup, GroupData, Device };

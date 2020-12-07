@@ -6,44 +6,53 @@ export default gql`
   type User {
     _id: ID!
     username: String!
-    trucks: [UsersTruck]
+    groups: [UserGroup]
   }
 
   type Token {
     token: String!
   }
 
-  type UsersTruck {
+  type UserGroup {
     _id: ID!
-    user: User!
-    truckName: String!
-    trucksData: [TrucksData]
+    groupName: String!
+    groupData(limit: Int): [GroupData]
   }
 
-  type TrucksData {
+  type GroupData {
     _id: ID!
-    truck: UsersTruck!
     date: Date!
-    temp: Float!
     lat: Float!
     lng: Float!
+    devices: [Device]
+  }
+
+  type Device {
+    _id: ID!
+    deviceId: String!
+    temp: Float!
   }
 
   type Query {
     user: User!
     login(username: String!, password: String): Token!
-    trucksData(truckId: String!): [TrucksData]
+    groupData(groupName: String!, date: Date, limit: Int): [GroupData]
   }
 
   type Mutation {
     createUser(username: String!, password: String!): User!
-    addUsersTruck(truckName: String!): UsersTruck!
-    addTrucksData(
-      truckId: String!
-      date: Date
-      temp: Float!
+    addUserGroup(username: String!, groupName: String!): UserGroup!
+    addGroupData(
+      username: String!
+      groupName: String!
       lat: Float!
       lng: Float!
-    ): TrucksData!
+      devices: [device]
+    ): GroupData
+  }
+
+  input device {
+    deviceId: String!
+    temp: Float!
   }
 `;

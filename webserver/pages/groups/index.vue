@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { getUserInfo, addTruck } from '@/utils/userApi'
+import { getUserInfo } from '@/utils/userApi'
 export default {
   async fetch() {
     this.results = await getUserInfo()
@@ -60,12 +60,10 @@ export default {
     }
   },
   methods: {
-    async queryCreateTruck(evt) {
+    queryCreateTruck(evt) {
       evt.preventDefault()
       try {
         this.overlay = false
-        const myresult = await addTruck(this.truckName)
-        console.log(myresult)
       } catch (e) {}
     },
     cancelSubmission() {

@@ -34,29 +34,18 @@ export function getUserInfo() {
   return request('POST', url, body, true)
 }
 
-export function addTruck(truckName) {
-  const url = `/graphql`
+export function addData(username, groupName, lat, lng, devices) {
+  const url = '/graphql'
   const body = {
     query: `mutation{
-      addUsersTruck(truckName: "${truckName}"){
-        _id
-        truckName
-      }
-    }`
-  }
-  return request('POST', url, body, true)
-}
-
-export function addTrucksData(truckId, temp, lat, lng) {
-  const url = `/graphql`
-  const body = {
-    query: `mutation{
-      addTrucksData(truckId:"${truckId}",temp:${temp},lat:${lat},lng:${lng}){
+      addGroupData(username:"${username}",groupName:"${groupName}",lat: ${lat},lng: ${lng},devices: ${devices}){
         _id
         date
-        temp
         lat
         lng
+        devices{
+          deviceId
+        }
       }
     }`
   }
