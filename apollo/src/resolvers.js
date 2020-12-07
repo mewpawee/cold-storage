@@ -1,4 +1,4 @@
-import { User, UsersTruck, TrucksData } from "./models/UserModel";
+import { User, UserGroup, GroupData, Device } from "./models/UserModel";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { AuthenticationError } from "apollo-server";
@@ -6,6 +6,13 @@ import { AuthenticationError } from "apollo-server";
 const getDate = () => {
   return new Promise((resolve, reject) => {
     const date = new Date().toUTCString();
+    resolve(date);
+  });
+};
+
+const getDateObj = () => {
+  return new Promise((resolve, reject) => {
+    const date = new Date();
     resolve(date);
   });
 };
@@ -40,12 +47,35 @@ export default {
         token,
       };
     },
-    trucksData: async (parent, { _id }, { me }, info) => {
+    groupData: async (
+      parent,
+      { groupName, date, limit = 5000 },
+      { me },
+      info
+    ) => {
       if (!me) {
         throw new AuthenticationError("You are not authenticated");
       }
-      const trucksData = await TrucksData.find({ truck: _id }).exec();
-      return trucksData;
+
+      if (date === undefined) {
+        date = new Date();
+      } 
+
+      const userGroup = await UserGroup.findOne({
+        user: me._id,
+        groupName: groupName,
+      });
+      const groupData = await GroupData.find({
+        group: userGroup._id,
+        date: {
+          $gte: new Date(new Date(date).setHours('00','00','00')),
+          $lt: new Date(new Date(date).setHours('23', '59', '59', '999'))
+        },
+      })
+        .sort({ date: -1 })
+        .limit(limit)
+        .exec();
+      return groupData;
     },
   },
 
@@ -54,29 +84,62 @@ export default {
       const user = await User.create({ username, password });
       return user;
     },
-    addUsersTruck: async (parent, { truckName }, { me }, info) => {
-      if (!me) {
-        throw new AuthenticationError("You are not authenticated");
-      }
-      return await UsersTruck.create({ user: me._id, truckName });
+    addUserGroup: async (parent, { username, groupName }, info) => {
+      const user = await User.findOne({ username: username });
+      return await UserGroup.create({ user: user._id, groupName: groupName });
     },
-    addTrucksData: async (parent, { truckId, temp, lat, lng }, _, info) => {
+    addGroupData: async (
+      parent,
+      { username, groupName, lat, lng, devices },
+      info
+    ) => {
       const date = await getDate();
-      return await TrucksData.create({ truck: truckId, date, temp, lat, lng });
+      const user = await User.findOne({ username: username });
+      let userGroup = await UserGroup.findOne({
+        user: user._id,
+        groupName: groupName,
+      });
+      if (!userGroup) {
+        userGroup = await UserGroup.create({
+          user: user._id,
+          groupName: groupName,
+        });
+      }
+      const groupData = await GroupData.create({
+        group: userGroup._id,
+        date: date,
+        lat: lat,
+        lng: lng,
+      });
+      for (const device of devices) {
+        await Device.create({
+          groupData: groupData._id,
+          deviceId: device.deviceId,
+          temp: device.temp,
+        });
+      }
+      return groupData;
     },
   },
-
   User: {
-    trucks: async ({ _id }, args, _, info) => {
-      const trucks = await UsersTruck.find({ user: _id }).exec();
-      return trucks;
+    groups: async ({ _id }, args, _, info) => {
+      const groups = await UserGroup.find({ user: _id }).exec();
+      return groups;
     },
   },
-
-  UsersTruck: {
-    trucksData: async ({ _id }, args, _, info) => {
-      const trucksData = await TrucksData.find({ truck: _id }).exec();
-      return trucksData;
+  UserGroup: {
+    groupData: async ({ _id }, { limit = 5000 }, _, info) => {
+      const groupData = await GroupData.find({ group: _id })
+        .sort({ date: -1 })
+        .limit(limit)
+        .exec();
+      return groupData;
+    },
+  },
+  GroupData: {
+    devices: async ({ _id }, args, _, info) => {
+      const devices = await Device.find({ groupData: _id }).exec();
+      return devices;
     },
   },
 };
