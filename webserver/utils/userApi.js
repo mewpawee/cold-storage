@@ -12,20 +12,53 @@ export function createUser(username, password) {
   return request('POST', url, body, false)
 }
 
+export function getUserGroup() {
+  const url = `/graphql`
+  const body = {
+    query: `{
+      user{
+        groups{
+          groupName
+        }
+      }
+    }`
+  }
+  return request('POST', url, body, true)
+}
+
+export function getGroupInfo(groupName, date) {
+  const url = `/graphql`
+  const body = {
+    query: `{
+      groupData(groupName:"${groupName}", date: "${date}"){
+        date
+        lat
+        lng
+        devices{
+          deviceId
+          temp
+        }
+      }
+    }`
+  }
+  return request('POST', url, body, true)
+}
+
 export function getUserInfo() {
   const url = `/graphql`
   const body = {
     query: `{
       user{
-        trucks{
-          _id
-          truckName
-          trucksData{
-            _id
+        groups{
+          groupName
+          groupData(limit:1){
             date
-            temp
             lat
             lng
+            devices{
+              deviceId
+              temp
+            }
           }
         }
       }
