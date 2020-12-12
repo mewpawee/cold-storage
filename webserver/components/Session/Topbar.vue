@@ -12,42 +12,48 @@
       </v-col>
     </v-row>
 
-    <v-dialog
-      background="rgba(33, 33, 33, 0.50)"
-      v-model="dialogLogin"
-      max-width="290"
-    >
-      <v-text-field v-model="usernameLogin" label="Username"></v-text-field>
-      <v-text-field
-        v-model="passwordLogin"
-        label="Password"
-        type="password"
-      ></v-text-field>
-      <v-btn @click="handleLoginClicked"> Login </v-btn>
-      <v-alert v-model="errorLogin" dismissible type="error">
-        Username or Password was wrong, please try again.
-      </v-alert>
+    <v-dialog v-model="dialogLogin" max-width="290">
+      <v-card color="accent" class="justify-center">
+        <v-col class="display-3" cols="12">
+          <v-text-field v-model="usernameLogin" label="Username" />
+          <v-text-field
+            v-model="passwordLogin"
+            label="Password"
+            type="password"
+          ></v-text-field>
+        </v-col>
+        <v-btn large block color="primary" @click="handleLoginClicked">
+          Login
+        </v-btn>
+        <v-alert v-model="errorLogin" dismissible type="error">
+          Username or Password was wrong, please try again.
+        </v-alert>
+      </v-card>
     </v-dialog>
 
-    <v-dialog
-      background="rgba(33, 33, 33, 0.50)"
-      v-model="dialogSignup"
-      max-width="290"
-      dark
-    >
-      <v-text-field v-model="usernameSignup" label="Username"></v-text-field>
-      <v-text-field
-        v-model="passwordSignup"
-        label="Password"
-        type="password"
-      ></v-text-field>
-      <v-btn @click="handleSignupClicked"> Signup </v-btn>
-      <v-alert v-model="successSignup" dismissible type="success">
-        Signup Success!
-      </v-alert>
-      <v-alert v-model="errorSignup" dismissible type="error">
-        this username already exist. Please use other username.
-      </v-alert>
+    <v-dialog v-model="dialogSignup" max-width="290">
+      <v-card color="accent" class="justify-center">
+        <v-col class="display-3" cols="12">
+          <v-text-field
+            v-model="usernameSignup"
+            label="Username"
+          ></v-text-field>
+          <v-text-field
+            v-model="passwordSignup"
+            label="Password"
+            type="password"
+          ></v-text-field>
+        </v-col>
+        <v-btn large block color="primary" @click="handleSignupClicked">
+          Signup
+        </v-btn>
+        <v-alert v-model="successSignup" dismissible type="success">
+          Signup Success!
+        </v-alert>
+        <v-alert v-model="errorSignup" dismissible type="error">
+          this username already exist. Please use other username.
+        </v-alert>
+      </v-card>
     </v-dialog>
   </v-app-bar>
 </template>
