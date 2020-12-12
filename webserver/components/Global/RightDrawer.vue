@@ -3,37 +3,33 @@
     v-model="rightDrawer"
     :right="true"
     :clipped="false"
-    :fixed="true"
+    hide-overlay
+    temporary
     app
   >
-    <v-toolbar-title>{{ truck.name }}</v-toolbar-title>
-    <v-list disabled>
-      <v-divider />
-      <v-list-item>
-        <v-list-item-content>ID: </v-list-item-content>
-        <v-list-item-content class="align-end">{{
-          truck.id
+    <div v-if="selectedGroup && Object.keys(selectedGroup).length > 0">
+      <v-list-item v-for="(value, name) in selectedGroup[0]" :key="name">
+        <v-list-item-content>{{ name }}: </v-list-item-content>
+        <v-list-item-content v-if="name !== 'devices'" class="align-end">{{
+          value
         }}</v-list-item-content>
+        <div v-if="name == 'devices'">
+          <v-list-item-content>{{ name }}: </v-list-item-content>
+          <v-expansion-panels multiple>
+            <v-expansion-panel v-for="(item, i) in value" :key="i">
+              <v-expansion-panel-header>
+                DeviceId: {{ item.deviceId }}
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-list-item-content
+                  >Temp: {{ item.temp }}
+                </v-list-item-content>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </div>
       </v-list-item>
-      <v-list-item>
-        <v-list-item-content>Temp: </v-list-item-content>
-        <v-list-item-content class="align-end">{{
-          truck.temp
-        }}</v-list-item-content>
-      </v-list-item>
-      <v-list-item>
-        <v-list-item-content>Latitude: </v-list-item-content>
-        <v-list-item-content class="align-end">{{
-          truck.lat
-        }}</v-list-item-content>
-      </v-list-item>
-      <v-list-item>
-        <v-list-item-content>Longitude: </v-list-item-content>
-        <v-list-item-content class="align-end">{{
-          truck.lng
-        }}</v-list-item-content>
-      </v-list-item>
-    </v-list>
+    </div>
   </v-navigation-drawer>
 </template>
 
@@ -45,6 +41,11 @@ export default {
     }
   },
   computed: {
+    selectedGroup: {
+      get() {
+        return this.$nuxt.$store.state.selectedGroup
+      }
+    },
     rightDrawer: {
       get() {
         return this.$nuxt.$store.state.rightDrawer
@@ -54,15 +55,16 @@ export default {
       }
     }
   },
-  mounted() {
-    this.truck = this.$nuxt.$store.state.truck
-  },
   methods: {
     handleLoggedOut() {
       return this.$nuxt.$auth.logout()
+    },
+    onClickOutside() {
+      return this.$store.commit('set_right_drawer', false)
     }
   }
 }
 </script>
 
+<style lang="css" scoped></style>
 <style lang="css" scoped></style>

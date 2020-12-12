@@ -2,15 +2,18 @@ export const state = () => ({
   leftDrawer: false,
   rightDrawer: false,
   miniVariant: false,
-  truck: {
-    id: '',
-    temp: '',
-    lat: '',
-    lng: ''
-  }
+  groups: [],
+  selectedGroup: []
 })
 
 export const mutations = {
+  set_selected_group(state, newSelectedGroup) {
+    console.log(newSelectedGroup)
+    state.selectedGroup = newSelectedGroup
+  },
+  set_groups(state, newGroups) {
+    state.groups = newGroups
+  },
   set_minivariant(state, newMiniVariant) {
     state.miniVariant = newMiniVariant
   },
