@@ -13,7 +13,7 @@
 import Topbar from '@/components/Session/Topbar'
 export default {
   components: {
-    Topbar
-  }
+    Topbar,
+  },
 }
 </script>

@@ -58,7 +58,7 @@ export default {
         .toISOString()
         .split('T')[0],
       groupInfo: null,
-      polling: null
+      polling: null,
     }
   },
   computed: {
@@ -75,7 +75,7 @@ export default {
             this.groupInfo.data.groupData
           )
         }
-      }
+      },
     },
     selectedGroup: {
       get() {
@@ -90,18 +90,18 @@ export default {
             this.groupInfo.data.groupData
           )
         }
-      }
+      },
     },
     groups: {
       get() {
         return this.$nuxt.$store.state.groups
-      }
+      },
     },
     miniVariant: {
       get() {
         return this.$nuxt.$store.state.miniVariant
-      }
-    }
+      },
+    },
   },
   mounted() {
     this.user = 'Welcome, ' + this.$nuxt.$auth.user.username + '!'
@@ -132,14 +132,14 @@ export default {
         'set_right_drawer',
         !this.$nuxt.$store.state.rightDrawer
       )
-    }
+    },
   },
   beforeDestroy() {
     clearInterval(this.polling)
   },
   created() {
     this.pollData()
-  }
+  },
 }
 </script>
 >

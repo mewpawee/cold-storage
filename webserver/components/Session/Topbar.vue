@@ -71,7 +71,7 @@ export default {
       passwordSignup: '',
       errorLogin: false,
       successSignup: false,
-      errorSignup: false
+      errorSignup: false,
     }
   },
   mounted() {
@@ -87,10 +87,10 @@ export default {
            login(username:"${this.usernameLogin}",password:"${this.passwordLogin}"){
              token
            }
-         }`
+         }`,
         }
         const response = await this.$auth.loginWith('local', {
-          data: body
+          data: body,
         })
         console.log(response)
         if (response.data) {
@@ -118,7 +118,7 @@ export default {
         this.errorSignup = true
         console.log(err)
       }
-    }
-  }
+    },
+  },
 }
 </script>

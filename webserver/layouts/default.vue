@@ -22,7 +22,7 @@ export default {
     LeftDrawer,
     Topbar,
     RightDrawer,
-    Footer
-  }
+    Footer,
+  },
 }
 </script>

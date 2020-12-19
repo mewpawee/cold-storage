@@ -37,14 +37,14 @@
 export default {
   data() {
     return {
-      truck: {}
+      truck: {},
     }
   },
   computed: {
     selectedGroup: {
       get() {
         return this.$nuxt.$store.state.selectedGroup
-      }
+      },
     },
     rightDrawer: {
       get() {
@@ -52,8 +52,8 @@ export default {
       },
       set(val) {
         return this.$store.commit('set_right_drawer', val)
-      }
-    }
+      },
+    },
   },
   methods: {
     handleLoggedOut() {
@@ -61,8 +61,8 @@ export default {
     },
     onClickOutside() {
       return this.$store.commit('set_right_drawer', false)
-    }
-  }
+    },
+  },
 }
 </script>
 
