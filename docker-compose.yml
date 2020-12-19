@@ -9,7 +9,7 @@ services:
       HOST: localhost
       PORT: 80
     ports:
-      - 80:80
+      - 3010:80
     depends_on:
       - apollo
     volumes:

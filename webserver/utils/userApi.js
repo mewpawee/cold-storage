@@ -7,7 +7,7 @@ export function createUser(username, password) {
           _id
           username
         }
-    }`
+    }`,
   }
   return request('POST', url, body, false)
 }
@@ -21,7 +21,7 @@ export function getUserGroup() {
           groupName
         }
       }
-    }`
+    }`,
   }
   return request('POST', url, body, true)
 }
@@ -39,7 +39,7 @@ export function getGroupInfo(groupName, date) {
           temp
         }
       }
-    }`
+    }`,
   }
   return request('POST', url, body, true)
 }
@@ -62,7 +62,7 @@ export function getUserInfo() {
           }
         }
       }
-    }`
+    }`,
   }
   return request('POST', url, body, true)
 }
@@ -80,7 +80,7 @@ export function addData(username, groupName, lat, lng, devices) {
           deviceId
         }
       }
-    }`
+    }`,
   }
   return request('POST', url, body, false)
 }

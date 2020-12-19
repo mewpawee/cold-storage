@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       query: '',
-      results: []
+      results: [],
     }
   },
   methods: {
@@ -51,8 +51,8 @@ export default {
       const url = `https://api.jikan.moe/v3/search/manga?q=${this.query}&page=1`
       const response = await axios.get(url)
       this.results = response.data.results
-    }
-  }
+    },
+  },
 }
 </script>
 

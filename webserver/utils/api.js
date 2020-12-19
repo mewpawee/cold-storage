@@ -1,5 +1,5 @@
 import axios from 'axios'
-const getToken = function() {
+const getToken = function () {
   if (process.server) {
     // server side
     return
@@ -21,7 +21,7 @@ export async function request(method, url, data, auth = false) {
       method,
       url,
       data: JSON.stringify(data),
-      headers
+      headers,
     })
     return response.data
   } catch (e) {

@@ -1,28 +1,27 @@
 const colors = require('vuetify/es5/util/colors').default
-host = process.env.HOST
 const userRequest = {
   query: `{
    user{
      _id
      username
    }
- }`
+ }`,
 }
 
 module.exports = {
   serverMiddleware: [
     {
       path: 'graphql',
-      handler: '~/api/graphql.js'
+      handler: '~/api/graphql.js',
     },
     {
       path: 'api',
-      handler: '~/api/submission.js'
-    }
+      handler: '~/api/submission.js',
+    },
   ],
   server: {
     port: process.env.PORT || 3000,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
   },
   mode: 'universal',
   /*
@@ -37,10 +36,10 @@ module.exports = {
       {
         hid: 'description',
         name: 'description',
-        content: process.env.npm_package_description || ''
-      }
+        content: process.env.npm_package_description || '',
+      },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
   /*
    ** Customize the progress-bar color
@@ -60,7 +59,7 @@ module.exports = {
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
   ],
   /*
    ** Nuxt.js modules
@@ -70,24 +69,24 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/auth',
     '@nuxtjs/apollo',
-    'nuxt-leaflet'
+    'nuxt-leaflet',
   ],
   router: {
-    middleware: ['auth']
+    middleware: ['auth'],
   },
   apollo: {
     clientConfigs: {
       default: {
         httpEndpoint: `/graphql`,
         httpLinkOptions: {
-          credentials: 'same-origin'
-        }
-      }
-    }
+          credentials: 'same-origin',
+        },
+      },
+    },
   },
   auth: {
     redirect: {
-      login: '/'
+      login: '/',
     },
     strategies: {
       local: {
@@ -95,20 +94,20 @@ module.exports = {
           login: {
             url: `/`,
             method: 'post',
-            propertyName: 'data.login.token'
+            propertyName: 'data.login.token',
           },
           logout: false,
           user: {
             url: `/`,
             method: 'post',
             data: userRequest,
-            propertyName: 'data.user'
-          }
+            propertyName: 'data.user',
+          },
         },
         tokenName: 'token',
-        autoFetchUser: true
-      }
-    }
+        autoFetchUser: true,
+      },
+    },
   },
   /*
    ** Axios module configuration
@@ -133,10 +132,10 @@ module.exports = {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
+          success: colors.green.accent3,
+        },
+      },
+    },
   },
   /*
    ** Build configuration
@@ -145,9 +144,9 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {},
   },
   publicRuntimeConfig: {
-    host: process.env.HOST
-  }
+    host: process.env.HOST,
+  },
 }

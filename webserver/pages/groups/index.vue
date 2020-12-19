@@ -7,19 +7,13 @@
         <v-card>
           <v-form @submit="queryCreateTruck">
             <v-text-field v-model="truckName" label="Truck Name"></v-text-field>
-            <v-btn type="submit" color="primary">
-              Save
-            </v-btn>
-            <v-btn @click="cancelSubmission" color="grey">
-              Cancel
-            </v-btn>
+            <v-btn type="submit" color="primary"> Save </v-btn>
+            <v-btn @click="cancelSubmission" color="grey"> Cancel </v-btn>
           </v-form>
         </v-card>
       </v-overlay>
       <v-btn block @click="overlay = !overlay">
-        <v-icon dark>
-          mdi-plus
-        </v-icon>
+        <v-icon dark> mdi-plus </v-icon>
         Add new Trucks
       </v-btn>
       <v-row>
@@ -56,7 +50,7 @@ export default {
     return {
       overlay: false,
       truckName: '',
-      results: []
+      results: [],
     }
   },
   methods: {
@@ -68,7 +62,7 @@ export default {
     },
     cancelSubmission() {
       this.overlay = false
-    }
-  }
+    },
+  },
 }
 </script>

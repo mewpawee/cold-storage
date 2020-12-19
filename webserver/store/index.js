@@ -3,12 +3,11 @@ export const state = () => ({
   rightDrawer: false,
   miniVariant: false,
   groups: [],
-  selectedGroup: []
+  selectedGroup: [],
 })
 
 export const mutations = {
   set_selected_group(state, newSelectedGroup) {
-    console.log(newSelectedGroup)
     state.selectedGroup = newSelectedGroup
   },
   set_groups(state, newGroups) {
@@ -26,5 +25,5 @@ export const mutations = {
     state.truck.temp = newTruckInfo.trucksData[0].temp
     state.truck.lat = newTruckInfo.trucksData[0].lat
     state.truck.lng = newTruckInfo.trucksData[0].lng
-  }
+  },
 }

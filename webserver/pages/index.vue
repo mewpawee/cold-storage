@@ -18,20 +18,20 @@ export default {
     model: 0,
     items: [
       {
-        src: truck1
+        src: truck1,
       },
       {
-        src: truck2
+        src: truck2,
       },
       {
-        src: truck3
-      }
-    ]
+        src: truck3,
+      },
+    ],
   }),
   mounted() {
     if (this.$auth.loggedIn) {
       this.$router.replace({ name: 'dashboard' })
     }
-  }
+  },
 }
 </script>

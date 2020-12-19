@@ -34,14 +34,14 @@ export default {
         {
           icon: 'mdi-monitor-dashboard',
           title: 'Dashboard',
-          to: { name: 'dashboard' }
+          to: { name: 'dashboard' },
         },
         {
           icon: 'mdi-group',
           title: 'Groups',
-          to: { name: 'groups' }
-        }
-      ]
+          to: { name: 'groups' },
+        },
+      ],
     }
   },
   computed: {
@@ -51,8 +51,8 @@ export default {
       },
       set(val) {
         this.$store.commit('set_miniVariant', val)
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>

@@ -8,9 +8,9 @@
 export default {
   data() {
     return {
-      fixed: true
+      fixed: true,
     }
-  }
+  },
 }
 </script>
 

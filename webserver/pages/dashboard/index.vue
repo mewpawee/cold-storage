@@ -1,7 +1,7 @@
 <template lang="html">
-  <div id="map-wrap" style="height: 80vh;">
+  <div id="map-wrap" style="height: 80vh">
     <no-ssr>
-      <l-map :zoom="6" :center="[13.1563, 101.5018]" style="z-index: 0;">
+      <l-map :zoom="6" :center="[13.1563, 101.5018]" style="z-index: 0">
         <l-tile-layer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         ></l-tile-layer>
@@ -33,13 +33,6 @@
 import { getUserGroup } from '@/utils/userApi'
 export default {
   middleware: 'auth',
-  async fetch() {
-    this.userGroup = await getUserGroup()
-    console.log(this.userGroup)
-    this.$store.commit('set_groups', this.userGroup.data.user.groups)
-  },
-  fetchDelay: 1000,
-  fetchOnServer: false,
   data() {
     return {
       selectedTruck: {},
@@ -49,29 +42,42 @@ export default {
           truckId: 'Hello',
           temp: 20.5,
           lat: 13.1563,
-          lng: 101.5018
+          lng: 101.5018,
         },
         {
           truckId: 'World',
           temp: 20.5,
           lat: 12.4563,
-          lng: 101.1018
-        }
-      ]
+          lng: 101.1018,
+        },
+      ],
       // geojson: thaiBorder
     }
   },
+  async fetch() {
+    this.userGroup = await getUserGroup()
+    console.log(this.userGroup)
+    this.$store.commit('set_groups', this.userGroup.data.user.groups)
+  },
+  fetchDelay: 1000,
+  fetchOnServer: false,
   computed: {
     selectedGroup: {
       get() {
         return this.$nuxt.$store.state.selectedGroup
-      }
+      },
+    },
+  },
+  activated() {
+    // Call fetch again if last fetch more than 30 sec ago
+    if (this.$fetchState.timestamp <= Date.now() - 30000) {
+      this.$fetch()
     }
   },
   methods: {
     onMarkerClicked() {
       this.$store.commit('set_right_drawer', true)
-    }
-  }
+    },
+  },
 }
 </script>
