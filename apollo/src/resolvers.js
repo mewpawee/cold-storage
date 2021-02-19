@@ -45,10 +45,10 @@ export default {
         expiresIn: 24 * 10 * 50,
       });
 
-      const bearerToken = await addBearer(token);
-      console.log(bearerToken);
+      //const bearerToken = await addBearer(token);
+      //console.log(bearerToken);
       return {
-        token: bearerToken,
+        token: token,
       };
     },
     groupData: async (
