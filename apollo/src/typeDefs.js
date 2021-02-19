@@ -22,6 +22,7 @@ export default gql`
   type GroupData {
     _id: ID!
     date: Date!
+    dateString: String 
     lat: Float!
     lng: Float!
     devices: [Device]
