@@ -45,6 +45,7 @@ const groupDataSchema = new Schema({
     required: true,
   },
   date: { type: Date, required: true },
+  dateString: {type: String},
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
   devices: [{ type: mongoose.Schema.Types.ObjectId, ref: "device" }],

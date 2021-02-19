@@ -5,15 +5,17 @@ import { AuthenticationError } from "apollo-server";
 
 const getDate = () => {
   return new Promise((resolve, reject) => {
-    const date = new Date().toUTCString();
+    //const date = new Date().toUTCString();
+    let date = new Date();
+    date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
     resolve(date);
   });
 };
 
-const getDateObj = () => {
+const addBearer = (token) => {
   return new Promise((resolve, reject) => {
-    const date = new Date();
-    resolve(date);
+    const bearerToken = "Bearer " + token;
+    resolve(bearerToken);
   });
 };
 
@@ -43,8 +45,10 @@ export default {
         expiresIn: 24 * 10 * 50,
       });
 
+      const bearerToken = await addBearer(token);
+      console.log(bearerToken);
       return {
-        token,
+        token: bearerToken,
       };
     },
     groupData: async (
@@ -59,7 +63,7 @@ export default {
 
       if (date === undefined) {
         date = new Date();
-      } 
+      }
 
       const userGroup = await UserGroup.findOne({
         user: me._id,
@@ -68,13 +72,14 @@ export default {
       const groupData = await GroupData.find({
         group: userGroup._id,
         date: {
-          $gte: new Date(new Date(date).setHours('00','00','00')),
-          $lt: new Date(new Date(date).setHours('23', '59', '59', '999'))
+          $gte: new Date(new Date(date).setHours("00", "00", "00")),
+          $lt: new Date(new Date(date).setHours("23", "59", "59", "999")),
         },
       })
         .sort({ date: -1 })
         .limit(limit)
         .exec();
+      console.log(groupData);
       return groupData;
     },
   },
@@ -94,6 +99,9 @@ export default {
       info
     ) => {
       const date = await getDate();
+      const todayDate = await date.toLocaleString("en-US", {
+        timeZone: "Asia/Bangkok",
+      });
       const user = await User.findOne({ username: username });
       let userGroup = await UserGroup.findOne({
         user: user._id,
@@ -108,6 +116,7 @@ export default {
       const groupData = await GroupData.create({
         group: userGroup._id,
         date: date,
+        dateString: todayDate,
         lat: lat,
         lng: lng,
       });
@@ -129,7 +138,7 @@ export default {
   },
   UserGroup: {
     groupData: async ({ _id }, { limit = 5000 }, _, info) => {
-      const groupData = await GroupData.find({ group: _id })
+      let groupData = await GroupData.find({ group: _id })
         .sort({ date: -1 })
         .limit(limit)
         .exec();
@@ -138,7 +147,7 @@ export default {
   },
   GroupData: {
     devices: async ({ _id }, args, _, info) => {
-      const devices = await Device.find({ groupData: _id }).exec();
+      let devices = await Device.find({ groupData: _id }).exec();
       return devices;
     },
   },
