@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    build: "./nginx"
+    ports:
+        - 80:80
   webserver:
     container_name: webserver
     restart: unless-stopped
@@ -8,10 +14,11 @@ services:
     environment:
       HOST: localhost
       PORT: 80
-    ports:
-      - 3010:80
+      #ports:
+      #- 3010:80
     depends_on:
       - apollo
+      - nginx
     volumes:
       - type: bind
         source: ./webserver
@@ -26,10 +33,11 @@ services:
       DB_PASSWORD: rootpassword
       DB_NAME: USER
       DB_PORT: 27017
-    ports:
-      - 4000:4000
+      #ports:
+      #- 4000:4000
     depends_on:
       - database
+      - nginx
   database:
     container_name: database
     restart: unless-stopped

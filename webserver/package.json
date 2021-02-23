@@ -10,7 +10,8 @@
     "start": "cross-env NODE_ENV=production node server/index.js",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest"
+    "test": "jest",
+    "production": "nuxt start"
   },
   "dependencies": {
     "@nuxtjs/apollo": "^4.0.1-rc.1",
@@ -23,7 +24,7 @@
     "express": "^4.16.4",
     "graphql-tag": "^2.10.3",
     "http-proxy": "^1.18.1",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.15.2",
     "nuxt-leaflet": "^0.0.22",
     "vue": "^2.6.11",
     "vue-server-renderer": "^2.6.11",
