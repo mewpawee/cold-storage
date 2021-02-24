@@ -25,6 +25,7 @@
     "graphql-tag": "^2.10.3",
     "http-proxy": "^1.18.1",
     "nuxt": "^2.15.2",
+    "nuxt-gmaps": "^1.2.10",
     "nuxt-leaflet": "^0.0.22",
     "vue": "^2.6.11",
     "vue-server-renderer": "^2.6.11",

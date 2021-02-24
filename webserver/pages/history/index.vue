@@ -1,35 +1,53 @@
 <template>
   <div>
     <v-data-table
+      :key="selectedGroupName"
       :headers="headers"
-      :items="desserts"
-      sort-by="calories"
+      :items="groupInfo"
+      sort-by="date"
       class="elevation-1"
-      item-key="name"
     >
-      test
+      <template #[`item.date`]="{ item }">
+        <span>{{ new Date(item.date).toLocaleString() }}</span>
+      </template>
+      <template #[`item.map`]="{ item }">
+        <v-btn x-small @click.stop="clickMap(item)"> Map </v-btn>
+      </template>
     </v-data-table>
+
+    <v-dialog
+      v-model="mapClicked"
+      transition="dialog-bottom-transition"
+      width="auto "
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
+      <v-card-text>
+        <PopMap :key="currentPosition" :location="currentPosition"
+      /></v-card-text>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import PopMap from '@/components/Map/PopMap'
+import { getGroupInfo } from '@/utils/userApi'
 export default {
+  components: {
+    PopMap,
+  },
   data: () => ({
-    dialog: false,
+    currentPosition: {},
+    mapClicked: false,
     dialogDelete: false,
+    groupInfo: [],
     headers: [
-      { text: 'Date', value: 'date' },
-      { text: '1', value: '1' },
-      { text: '2', value: '2' },
-      { text: '3', value: '3' },
-      { text: '4', value: '4' },
-      { text: '5', value: '5' },
-      { text: '6', value: '6' },
-      { text: '7', value: '7' },
-      { text: '8', value: '8' },
-      { text: '9', value: '9' },
+      { text: 'Date, Time', value: 'date' },
+      { text: 'Device ID', value: 'deviceId' },
+      { text: 'Temp', value: 'temp' },
+      { text: 'Lat', value: 'lat' },
+      { text: 'Lng', value: 'lng' },
+      { text: 'Map', value: 'map' },
     ],
-    desserts: [],
     editedIndex: -1,
     editedItem: {
       name: '',
@@ -38,82 +56,49 @@ export default {
       name: '',
     },
   }),
-
+  fetch() {
+    this.getInfo(this.selectedGroupName)
+  },
+  fetchDelay: 1000,
+  fetchOnServer: false,
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+    selectedGroupName: {
+      get() {
+        return this.$nuxt.$store.state.selectedGroupName
+      },
     },
   },
-
   watch: {
-    dialog(val) {
-      val || this.close()
-    },
-    dialogDelete(val) {
-      val || this.closeDelete()
+    selectedGroupName(val) {
+      this.getInfo(val)
     },
   },
-
-  created() {
-    this.initialize()
-  },
-
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          name: 'scan-1234',
-          date: '10/22/20',
-          1: 'scanning',
-        },
-        {
-          name: 'scan-5678',
-          date: '10/20/20',
-          status: 'done',
-        },
-      ]
-    },
-
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
-
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    closeDelete() {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      } else {
-        this.desserts.push(this.editedItem)
+    manipulateData(data) {
+      const result = []
+      for (const thisData of data) {
+        for (const device of thisData.devices) {
+          result.push({
+            date: thisData.date,
+            lat: thisData.lat,
+            lng: thisData.lng,
+            deviceId: device.deviceId,
+            temp: device.temp,
+          })
+        }
       }
-      this.close()
+      return result
+    },
+    async getInfo(groupName) {
+      const queryGroupInfo = await getGroupInfo(groupName)
+      const result = await this.manipulateData(queryGroupInfo.data.groupData)
+      this.groupInfo = result
+      // console.log(this.groupInfo)
+    },
+    clickMap(item) {
+      this.currentPosition = item
+      console.log(this.currentPosition)
+      this.mapClicked = true
     },
   },
 }

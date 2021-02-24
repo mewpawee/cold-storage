@@ -85,6 +85,7 @@ export default {
         this.statusProxy = val
         if (this.date) {
           this.groupInfo = await getGroupInfo(val, this.date)
+          this.$store.commit('set_selected_group_name', this.selectedGroup)
           this.$store.commit(
             'set_selected_group',
             this.groupInfo.data.groupData

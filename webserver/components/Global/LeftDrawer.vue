@@ -37,9 +37,9 @@ export default {
           to: { name: 'dashboard' },
         },
         {
-          icon: 'mdi-group',
-          title: 'Groups',
-          to: { name: 'groups' },
+          icon: 'mdi-history',
+          title: 'History',
+          to: { name: 'history' },
         },
       ],
     }
