@@ -5,17 +5,8 @@ import { AuthenticationError } from "apollo-server";
 
 const getDate = () => {
   return new Promise((resolve, reject) => {
-    //const date = new Date().toUTCString();
     let date = new Date();
-    date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
     resolve(date);
-  });
-};
-
-const addBearer = (token) => {
-  return new Promise((resolve, reject) => {
-    const bearerToken = "Bearer " + token;
-    resolve(bearerToken);
   });
 };
 
@@ -45,15 +36,13 @@ export default {
         expiresIn: 24 * 10 * 50,
       });
 
-      //const bearerToken = await addBearer(token);
-      //console.log(bearerToken);
       return {
         token: token,
       };
     },
     groupData: async (
       parent,
-      { groupName, date, limit = 5000 },
+      { groupName, startDate, endDate, limit = 5000 },
       { me },
       info
     ) => {
@@ -61,25 +50,34 @@ export default {
         throw new AuthenticationError("You are not authenticated");
       }
 
-      if (date === undefined) {
-        date = new Date();
+      if (startDate === undefined) {
+        startDate = new Date();
+      }
+      if (endDate === undefined) {
+        endDate = new Date();
       }
 
       const userGroup = await UserGroup.findOne({
         user: me._id,
         groupName: groupName,
       });
+      const setStartDate =
+        new Date(new Date(startDate).setHours("0", "0", "0")).getTime() +
+        420 * 6000;
+      const setEndDate =
+        new Date(new Date(endDate).setHours("23", "59", "59")).getTime() +
+        420 * 6000;
       const groupData = await GroupData.find({
         group: userGroup._id,
         date: {
-          $gte: new Date(new Date(date).setHours("00", "00", "00")),
-          $lt: new Date(new Date(date).setHours("23", "59", "59", "999")),
+          $gte: new Date(setStartDate),
+          $lt: new Date(setEndDate),
         },
       })
         .sort({ date: -1 })
         .limit(limit)
         .exec();
-      console.log(groupData);
+      console.log(setStartDate, setEndDate);
       return groupData;
     },
   },

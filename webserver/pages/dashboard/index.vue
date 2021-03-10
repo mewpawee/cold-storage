@@ -11,8 +11,8 @@
         <div v-else>
           <div>
             <l-marker
-              v-if="selectedGroup && Object.keys(selectedGroup).length > 0"
-              :lat-lng="[selectedGroup[0].lat, selectedGroup[0].lng]"
+              v-if="groupData.length > 0"
+              :lat-lng="[groupData[0].lat, groupData[0].lng]"
               @click="onMarkerClicked()"
             >
               <l-icon
@@ -30,42 +30,41 @@
 
 <script>
 // import thaiBorder from '@/static/thaiBorder.json'
-import { getUserGroup } from '@/utils/userApi'
+import { getGroupInfo } from '@/utils/userApi'
 export default {
   middleware: 'auth',
   data() {
     return {
+      groupData: [],
       selectedTruck: {},
-      userGroup: {},
-      trucks: [
-        {
-          truckId: 'Hello',
-          temp: 20.5,
-          lat: 13.1563,
-          lng: 101.5018,
-        },
-        {
-          truckId: 'World',
-          temp: 20.5,
-          lat: 12.4563,
-          lng: 101.1018,
-        },
-      ],
-      // geojson: thaiBorder
     }
   },
   async fetch() {
-    this.userGroup = await getUserGroup()
-    console.log(this.userGroup)
-    this.$store.commit('set_groups', this.userGroup.data.user.groups)
+    const todayDate = new Date(
+      new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
+    )
+      .toISOString()
+      .split('T')[0]
+    const queryGroupInfo = await getGroupInfo(
+      this.selectedGroupName,
+      todayDate,
+      todayDate
+    )
+    console.log(queryGroupInfo.data.groupData)
+    if (queryGroupInfo.data.groupData) {
+      this.groupData = queryGroupInfo.data.groupData
+    }
   },
-  fetchDelay: 1000,
-  fetchOnServer: false,
   computed: {
-    selectedGroup: {
+    selectedGroupName: {
       get() {
-        return this.$nuxt.$store.state.selectedGroup
+        return this.$nuxt.$store.state.selectedGroupName
       },
+    },
+  },
+  watch: {
+    selectedGroupName() {
+      this.$fetch()
     },
   },
   activated() {

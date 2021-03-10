@@ -22,7 +22,7 @@ export default gql`
   type GroupData {
     _id: ID!
     date: Date!
-    dateString: String 
+    dateString: String
     lat: Float!
     lng: Float!
     devices: [Device]
@@ -37,7 +37,13 @@ export default gql`
   type Query {
     user: User!
     login(username: String!, password: String): Token!
-    groupData(groupName: String!, date: Date, limit: Int): [GroupData]
+    groupData(
+      groupName: String!
+      date: Date
+      limit: Int
+      startDate: Date
+      endDate: Date
+    ): [GroupData]
   }
 
   type Mutation {

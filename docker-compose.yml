@@ -22,7 +22,7 @@ services:
     volumes:
       - type: bind
         source: ./webserver
-        target: /usr/src/app
+        target: /app
         read_only: false
   apollo:
     container_name: apollo

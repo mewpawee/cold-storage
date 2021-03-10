@@ -4,15 +4,11 @@ export const state = () => ({
   miniVariant: false,
   groups: [],
   selectedGroupName: null,
-  selectedGroup: [],
 })
 
 export const mutations = {
   set_selected_group_name(state, newSelectedGroupName) {
     state.selectedGroupName = newSelectedGroupName
-  },
-  set_selected_group(state, newSelectedGroup) {
-    state.selectedGroup = newSelectedGroup
   },
   set_groups(state, newGroups) {
     state.groups = newGroups

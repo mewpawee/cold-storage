@@ -15,27 +15,6 @@
           label="Select Group"
         />
       </v-col>
-      <v-col cols="12" sm="6" md="4">
-        <v-menu
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="date"
-              label="Picker without buttons"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
-        </v-menu>
-      </v-col>
     </v-row>
     <v-spacer />
     <v-toolbar-title v-text="user" />
@@ -46,52 +25,63 @@
 </template>
 
 <script>
-import { getGroupInfo } from '@/utils/userApi'
+import { getUserGroup } from '@/utils/userApi'
+
 export default {
   data() {
     return {
       title: 'Cold-chain',
       user: '',
       statusProxy: null,
-      dateProxy: new Date(
-        new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-      )
-        .toISOString()
-        .split('T')[0],
+      // dateProxy: new Date(
+      //   new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
+      // )
+      //   .toISOString()
+      //   .split('T')[0],
       groupInfo: null,
       polling: null,
     }
   },
+  async fetch() {
+    const userGroups = await getUserGroup()
+    this.$store.commit('set_groups', userGroups.data.user.groups)
+  },
+  fetchDelay: 1000,
+  fetchOnServer: false,
   computed: {
-    date: {
-      get() {
-        return this.dateProxy
-      },
-      async set(val) {
-        this.dateProxy = val
-        if (this.selectedGroup) {
-          this.groupInfo = await getGroupInfo(this.selectedGroup, this.date)
-          this.$store.commit(
-            'set_selected_group',
-            this.groupInfo.data.groupData
-          )
-        }
-      },
-    },
+    // date: {
+    //   get() {
+    //     return this.dateProxy
+    //   },
+    //   async set(val) {
+    //     this.dateProxy = val
+    //     if (this.selectedGroup) {
+    //       this.groupInfo = await getGroupInfo(
+    //         this.selectedGroup,
+    //         this.date,
+    //         this.date
+    //       )
+    //       this.$store.commit(
+    //         'set_selected_group',
+    //         this.groupInfo.data.groupData
+    //       )
+    //     }
+    //   },
+    // },
     selectedGroup: {
       get() {
         return this.statusProxy === null ? '' : this.statusProxy
       },
-      async set(val) {
+      set(val) {
         this.statusProxy = val
-        if (this.date) {
-          this.groupInfo = await getGroupInfo(val, this.date)
-          this.$store.commit('set_selected_group_name', this.selectedGroup)
-          this.$store.commit(
-            'set_selected_group',
-            this.groupInfo.data.groupData
-          )
-        }
+        this.$store.commit('set_selected_group_name', this.selectedGroup)
+        // if (this.date) {
+        //   this.groupInfo = await getGroupInfo(val, this.date, this.date)
+        //   this.$store.commit(
+        //     'set_selected_group',
+        //     this.groupInfo.data.groupData
+        //   )
+        // }
       },
     },
     groups: {
@@ -109,17 +99,17 @@ export default {
     this.user = 'Welcome, ' + this.$nuxt.$auth.user.username + '!'
   },
   methods: {
-    pollData() {
-      this.polling = setInterval(async () => {
-        if (this.date && this.selectedGroup) {
-          this.groupInfo = await getGroupInfo(this.selectedGroup, this.date)
-          this.$store.commit(
-            'set_selected_group',
-            this.groupInfo.data.groupData
-          )
-        }
-      }, 10000)
-    },
+    // pollData() {
+    //   this.polling = setInterval(async () => {
+    //     if (this.date && this.selectedGroup) {
+    //       this.groupInfo = await getGroupInfo(this.selectedGroup, this.date)
+    //       this.$store.commit(
+    //         'set_selected_group',
+    //         this.groupInfo.data.groupData
+    //       )
+    //     }
+    //   }, 10000)
+    // },
     signOut() {
       this.$auth.logout('local')
     },
@@ -136,12 +126,12 @@ export default {
       )
     },
   },
-  beforeDestroy() {
-    clearInterval(this.polling)
-  },
-  created() {
-    this.pollData()
-  },
+  // beforeDestroy() {
+  //   clearInterval(this.polling)
+  // },
+  // created() {
+  //   this.pollData()
+  // },
 }
 </script>
 >
