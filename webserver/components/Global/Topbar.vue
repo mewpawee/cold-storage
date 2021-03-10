@@ -3,6 +3,7 @@
     <v-btn icon @click.stop="miniVariantToggle">
       <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
     </v-btn>
+    <v-icon>mdi-snowflake-alert</v-icon>
     <v-toolbar-title v-text="title" />
     <v-row align="end" justify="center">
       <v-col cols="6" align="center">
@@ -49,7 +50,7 @@ import { getGroupInfo } from '@/utils/userApi'
 export default {
   data() {
     return {
-      title: 'Cold-Chain',
+      title: 'Cold-chain',
       user: '',
       statusProxy: null,
       dateProxy: new Date(
