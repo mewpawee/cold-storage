@@ -1,42 +1,27 @@
 <template lang="html">
-  <div id="map-wrap" style="height: 80vh">
-    <no-ssr>
-      <l-map :zoom="6" :center="[13.1563, 101.5018]" style="z-index: 0">
-        <l-tile-layer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        ></l-tile-layer>
-        <!-- <l-geo-json :geojson="geojson"></l-geo-json> -->
-        <p v-if="$fetchState.pending">Fetching...</p>
-        <p v-else-if="$fetchState.error">An error occurred :(</p>
-        <div v-else>
-          <div>
-            <l-marker
-              v-if="groupData.length > 0"
-              :lat-lng="[groupData[0].lat, groupData[0].lng]"
-              @click="onMarkerClicked()"
-            >
-              <l-icon
-                :icon-size="[40, 40]"
-                :icon-anchor="[20, 40]"
-                icon-url="/truck.svg"
-              />
-            </l-marker>
-          </div>
-        </div>
-      </l-map>
-    </no-ssr>
+  <div v-if="groupData[0]">
+    <GoogleMap
+      :key="(groupData[0].lat, groupData[0].lng)"
+      :location="groupData[0]"
+    />
+    <RightDrawer :data="groupData" />
   </div>
 </template>
 
 <script>
-// import thaiBorder from '@/static/thaiBorder.json'
 import { getGroupInfo } from '@/utils/userApi'
+import GoogleMap from '@/components/Map/GoogleMap'
+import RightDrawer from '@/components/Map/RightDrawer'
 export default {
+  components: {
+    GoogleMap,
+    RightDrawer,
+  },
   middleware: 'auth',
   data() {
     return {
       groupData: [],
-      selectedTruck: {},
+      polling: null,
     }
   },
   async fetch() {
@@ -73,7 +58,18 @@ export default {
       this.$fetch()
     }
   },
+  beforeDestroy() {
+    clearInterval(this.polling)
+  },
+  created() {
+    this.pollData()
+  },
   methods: {
+    pollData() {
+      this.polling = setInterval(() => {
+        this.$fetch()
+      }, 3000)
+    },
     onMarkerClicked() {
       this.$store.commit('set_right_drawer', true)
     },

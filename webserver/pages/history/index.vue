@@ -35,6 +35,7 @@
       :headers="headers"
       :items="groupInfo"
       sort-by="date"
+      sort-desc="false"
       class="elevation-1"
     >
       <template #[`item.date`]="{ item }">
@@ -91,6 +92,7 @@ export default {
     PopMap,
   },
   data: () => ({
+    polling: null,
     dates: [
       new Date(
         new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
@@ -155,7 +157,18 @@ export default {
       this.$fetch()
     }
   },
+  beforeDestroy() {
+    clearInterval(this.polling)
+  },
+  created() {
+    this.pollData()
+  },
   methods: {
+    pollData() {
+      this.polling = setInterval(() => {
+        this.$fetch()
+      }, 3000)
+    },
     handlePickedDates() {
       this.$fetch()
     },

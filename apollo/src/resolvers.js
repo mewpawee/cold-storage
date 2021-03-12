@@ -61,23 +61,18 @@ export default {
         user: me._id,
         groupName: groupName,
       });
-      const setStartDate =
-        new Date(new Date(startDate).setHours("0", "0", "0")).getTime() +
-        420 * 6000;
-      const setEndDate =
-        new Date(new Date(endDate).setHours("23", "59", "59")).getTime() +
-        420 * 6000;
+
       const groupData = await GroupData.find({
         group: userGroup._id,
         date: {
-          $gte: new Date(setStartDate),
-          $lt: new Date(setEndDate),
+          $gte: new Date(new Date(startDate).setHours("00", "00", "00")),
+          $lt: new Date(new Date(endDate).setHours("23", "59", "59")),
         },
       })
         .sort({ date: -1 })
         .limit(limit)
         .exec();
-      console.log(setStartDate, setEndDate);
+      console.log(startDate, endDate);
       return groupData;
     },
   },
