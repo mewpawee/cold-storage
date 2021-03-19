@@ -77,7 +77,7 @@
     >
       <v-card-text>
         <PopMap
-          :key="(groupInfo.date, groupInfo.deviceId)"
+          :key="(groupInfo.date, groupInfo.deviceId, currentPosition)"
           :location="currentPosition"
       /></v-card-text>
     </v-dialog>

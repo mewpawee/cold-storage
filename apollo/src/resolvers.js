@@ -2,6 +2,7 @@ import { User, UserGroup, GroupData, Device } from "./models/UserModel";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { AuthenticationError } from "apollo-server";
+import moment from "moment";
 
 const getDate = () => {
   return new Promise((resolve, reject) => {
@@ -61,12 +62,17 @@ export default {
         user: me._id,
         groupName: groupName,
       });
-
+      const start = moment(new Date(startDate), "YYYY-MM-DD")
+        .utcOffset("+0700")
+        .startOf("day");
+      const end = moment(new Date(endDate), "YYYY-MM-DD")
+        .utcOffset("+0700")
+        .endOf("day");
       const groupData = await GroupData.find({
         group: userGroup._id,
         date: {
-          $gte: new Date(new Date(startDate).setHours("00", "00", "00")),
-          $lt: new Date(new Date(endDate).setHours("23", "59", "59")),
+          $gte: start.toDate(),
+          $lt: end.toDate(),
         },
       })
         .sort({ date: -1 })
