@@ -1,10 +1,5 @@
 <template>
-  <v-navigation-drawer
-    v-model="leftDrawer"
-    :clipped="clipped"
-    :fixed="fixed"
-    app
-  >
+  <v-navigation-drawer v-model="leftDrawer" clipped fixed app>
     <v-list>
       <v-list-item
         v-for="(item, i) in items"
@@ -28,8 +23,6 @@
 export default {
   data() {
     return {
-      clipped: true,
-      fixed: true,
       items: [
         {
           icon: 'mdi-monitor-dashboard',

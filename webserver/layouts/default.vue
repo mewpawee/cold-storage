@@ -1,7 +1,7 @@
 <template>
   <v-app dark>
     <Topbar />
-    <LeftDrawer :drawer="drawer" />
+    <LeftDrawer />
     <v-main>
       <v-container>
         <nuxt />
@@ -20,11 +20,6 @@ export default {
     LeftDrawer,
     Topbar,
     Footer,
-  },
-  computed: {
-    drawer() {
-      return this.$store.state.leftDrawer.status
-    },
   },
 }
 </script>

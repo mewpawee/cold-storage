@@ -3,9 +3,9 @@
     <!-- <v-btn icon @click.stop="miniVariantToggle">
       <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
     </v-btn> -->
-    <v-app-bar-nav-icon @click.stop="leftDrawerOpen" class="d-flex d-lg-none" />
+    <v-app-bar-nav-icon @click.stop="leftDrawerOpen" class="d-lg-none" />
     <v-icon>mdi-snowflake-alert</v-icon>
-    <v-toolbar-title v-text="title" class="d-sm-none" />
+    <v-toolbar-title v-text="title" class="d-none d-md-flex" />
     <v-row align="end" justify="center">
       <v-col cols="6" align="center">
         <v-select
