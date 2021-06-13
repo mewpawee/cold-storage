@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    :mini-variant="miniVariant"
+    v-model="leftDrawer"
     :clipped="clipped"
     :fixed="fixed"
     app
@@ -45,12 +45,12 @@ export default {
     }
   },
   computed: {
-    miniVariant: {
+    leftDrawer: {
       get() {
-        return this.$nuxt.$store.state.miniVariant
+        return this.$nuxt.$store.state.leftDrawer.status
       },
       set(val) {
-        this.$store.commit('set_miniVariant', val)
+        return this.$store.commit('leftDrawer/set', val)
       },
     },
   },

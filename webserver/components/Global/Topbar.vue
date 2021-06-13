@@ -1,10 +1,11 @@
 <template>
   <v-app-bar clipped-left fixed app>
-    <v-btn icon @click.stop="miniVariantToggle">
+    <!-- <v-btn icon @click.stop="miniVariantToggle">
       <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-    </v-btn>
+    </v-btn> -->
+    <v-app-bar-nav-icon @click.stop="leftDrawerOpen" class="d-flex d-lg-none" />
     <v-icon>mdi-snowflake-alert</v-icon>
-    <v-toolbar-title v-text="title" />
+    <v-toolbar-title v-text="title" class="d-sm-none" />
     <v-row align="end" justify="center">
       <v-col cols="6" align="center">
         <v-select
@@ -89,10 +90,8 @@ export default {
         return this.$nuxt.$store.state.groups
       },
     },
-    miniVariant: {
-      get() {
-        return this.$nuxt.$store.state.miniVariant
-      },
+    miniVariant() {
+      return this.$nuxt.$store.state.miniVariant.status
     },
   },
   mounted() {
@@ -113,11 +112,8 @@ export default {
     signOut() {
       this.$auth.logout('local')
     },
-    miniVariantToggle() {
-      this.$store.commit(
-        'set_minivariant',
-        !this.$nuxt.$store.state.miniVariant
-      )
+    leftDrawerOpen() {
+      this.$store.commit('leftDrawer/set', true)
     },
     rightDrawerToggle() {
       this.$store.commit(
