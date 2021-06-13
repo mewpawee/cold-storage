@@ -1,10 +1,5 @@
 <template>
-  <v-navigation-drawer
-    :mini-variant="miniVariant"
-    :clipped="clipped"
-    :fixed="fixed"
-    app
-  >
+  <v-navigation-drawer v-model="leftDrawer" clipped fixed app>
     <v-list>
       <v-list-item
         v-for="(item, i) in items"
@@ -28,8 +23,6 @@
 export default {
   data() {
     return {
-      clipped: true,
-      fixed: true,
       items: [
         {
           icon: 'mdi-monitor-dashboard',
@@ -37,20 +30,20 @@ export default {
           to: { name: 'dashboard' },
         },
         {
-          icon: 'mdi-group',
-          title: 'Groups',
-          to: { name: 'groups' },
+          icon: 'mdi-history',
+          title: 'History',
+          to: { name: 'history' },
         },
       ],
     }
   },
   computed: {
-    miniVariant: {
+    leftDrawer: {
       get() {
-        return this.$nuxt.$store.state.miniVariant
+        return this.$nuxt.$store.state.leftDrawer.status
       },
       set(val) {
-        this.$store.commit('set_miniVariant', val)
+        return this.$store.commit('leftDrawer/set', val)
       },
     },
   },

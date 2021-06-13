@@ -2,20 +2,12 @@ import { User, UserGroup, GroupData, Device } from "./models/UserModel";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { AuthenticationError } from "apollo-server";
+import moment from "moment";
 
 const getDate = () => {
   return new Promise((resolve, reject) => {
-    //const date = new Date().toUTCString();
     let date = new Date();
-    date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
     resolve(date);
-  });
-};
-
-const addBearer = (token) => {
-  return new Promise((resolve, reject) => {
-    const bearerToken = "Bearer " + token;
-    resolve(bearerToken);
   });
 };
 
@@ -45,15 +37,13 @@ export default {
         expiresIn: 24 * 10 * 50,
       });
 
-      //const bearerToken = await addBearer(token);
-      //console.log(bearerToken);
       return {
         token: token,
       };
     },
     groupData: async (
       parent,
-      { groupName, date, limit = 5000 },
+      { groupName, startDate, endDate, limit = 5000 },
       { me },
       info
     ) => {
@@ -61,25 +51,34 @@ export default {
         throw new AuthenticationError("You are not authenticated");
       }
 
-      if (date === undefined) {
-        date = new Date();
+      if (startDate === undefined) {
+        startDate = new Date();
+      }
+      if (endDate === undefined) {
+        endDate = new Date();
       }
 
       const userGroup = await UserGroup.findOne({
         user: me._id,
         groupName: groupName,
       });
+      const start = moment(new Date(startDate), "YYYY-MM-DD")
+        .utcOffset("+0700")
+        .startOf("day");
+      const end = moment(new Date(endDate), "YYYY-MM-DD")
+        .utcOffset("+0700")
+        .endOf("day");
       const groupData = await GroupData.find({
         group: userGroup._id,
         date: {
-          $gte: new Date(new Date(date).setHours("00", "00", "00")),
-          $lt: new Date(new Date(date).setHours("23", "59", "59", "999")),
+          $gte: start.toDate(),
+          $lt: end.toDate(),
         },
       })
         .sort({ date: -1 })
         .limit(limit)
         .exec();
-      console.log(groupData);
+      console.log(startDate, endDate);
       return groupData;
     },
   },

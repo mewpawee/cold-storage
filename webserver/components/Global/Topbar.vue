@@ -1,9 +1,11 @@
 <template>
   <v-app-bar clipped-left fixed app>
-    <v-btn icon @click.stop="miniVariantToggle">
+    <!-- <v-btn icon @click.stop="miniVariantToggle">
       <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-    </v-btn>
-    <v-toolbar-title v-text="title" />
+    </v-btn> -->
+    <v-app-bar-nav-icon @click.stop="leftDrawerOpen" class="d-lg-none" />
+    <v-icon>mdi-snowflake-alert</v-icon>
+    <v-toolbar-title v-text="title" class="d-none d-md-flex" />
     <v-row align="end" justify="center">
       <v-col cols="6" align="center">
         <v-select
@@ -13,27 +15,6 @@
           single-line
           label="Select Group"
         />
-      </v-col>
-      <v-col cols="12" sm="6" md="4">
-        <v-menu
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="date"
-              label="Picker without buttons"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
-        </v-menu>
       </v-col>
     </v-row>
     <v-spacer />
@@ -45,51 +26,63 @@
 </template>
 
 <script>
-import { getGroupInfo } from '@/utils/userApi'
+import { getUserGroup } from '@/utils/userApi'
+
 export default {
   data() {
     return {
-      title: 'Cold-Chain',
+      title: 'Cold-chain',
       user: '',
       statusProxy: null,
-      dateProxy: new Date(
-        new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-      )
-        .toISOString()
-        .split('T')[0],
+      // dateProxy: new Date(
+      //   new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
+      // )
+      //   .toISOString()
+      //   .split('T')[0],
       groupInfo: null,
       polling: null,
     }
   },
+  async fetch() {
+    const userGroups = await getUserGroup()
+    this.$store.commit('set_groups', userGroups.data.user.groups)
+  },
+  fetchDelay: 1000,
+  fetchOnServer: false,
   computed: {
-    date: {
-      get() {
-        return this.dateProxy
-      },
-      async set(val) {
-        this.dateProxy = val
-        if (this.selectedGroup) {
-          this.groupInfo = await getGroupInfo(this.selectedGroup, this.date)
-          this.$store.commit(
-            'set_selected_group',
-            this.groupInfo.data.groupData
-          )
-        }
-      },
-    },
+    // date: {
+    //   get() {
+    //     return this.dateProxy
+    //   },
+    //   async set(val) {
+    //     this.dateProxy = val
+    //     if (this.selectedGroup) {
+    //       this.groupInfo = await getGroupInfo(
+    //         this.selectedGroup,
+    //         this.date,
+    //         this.date
+    //       )
+    //       this.$store.commit(
+    //         'set_selected_group',
+    //         this.groupInfo.data.groupData
+    //       )
+    //     }
+    //   },
+    // },
     selectedGroup: {
       get() {
         return this.statusProxy === null ? '' : this.statusProxy
       },
-      async set(val) {
+      set(val) {
         this.statusProxy = val
-        if (this.date) {
-          this.groupInfo = await getGroupInfo(val, this.date)
-          this.$store.commit(
-            'set_selected_group',
-            this.groupInfo.data.groupData
-          )
-        }
+        this.$store.commit('set_selected_group_name', this.selectedGroup)
+        // if (this.date) {
+        //   this.groupInfo = await getGroupInfo(val, this.date, this.date)
+        //   this.$store.commit(
+        //     'set_selected_group',
+        //     this.groupInfo.data.groupData
+        //   )
+        // }
       },
     },
     groups: {
@@ -97,35 +90,30 @@ export default {
         return this.$nuxt.$store.state.groups
       },
     },
-    miniVariant: {
-      get() {
-        return this.$nuxt.$store.state.miniVariant
-      },
+    miniVariant() {
+      return this.$nuxt.$store.state.miniVariant.status
     },
   },
   mounted() {
     this.user = 'Welcome, ' + this.$nuxt.$auth.user.username + '!'
   },
   methods: {
-    pollData() {
-      this.polling = setInterval(async () => {
-        if (this.date && this.selectedGroup) {
-          this.groupInfo = await getGroupInfo(this.selectedGroup, this.date)
-          this.$store.commit(
-            'set_selected_group',
-            this.groupInfo.data.groupData
-          )
-        }
-      }, 10000)
-    },
+    // pollData() {
+    //   this.polling = setInterval(async () => {
+    //     if (this.date && this.selectedGroup) {
+    //       this.groupInfo = await getGroupInfo(this.selectedGroup, this.date)
+    //       this.$store.commit(
+    //         'set_selected_group',
+    //         this.groupInfo.data.groupData
+    //       )
+    //     }
+    //   }, 10000)
+    // },
     signOut() {
       this.$auth.logout('local')
     },
-    miniVariantToggle() {
-      this.$store.commit(
-        'set_minivariant',
-        !this.$nuxt.$store.state.miniVariant
-      )
+    leftDrawerOpen() {
+      this.$store.commit('leftDrawer/set', true)
     },
     rightDrawerToggle() {
       this.$store.commit(
@@ -134,12 +122,12 @@ export default {
       )
     },
   },
-  beforeDestroy() {
-    clearInterval(this.polling)
-  },
-  created() {
-    this.pollData()
-  },
+  // beforeDestroy() {
+  //   clearInterval(this.polling)
+  // },
+  // created() {
+  //   this.pollData()
+  // },
 }
 </script>
 >

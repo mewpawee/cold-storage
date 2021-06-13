@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:alpine
+    command: --admin-password '$$2y$$05$$asYpOEE7vdevujczYeCwd.vqV0xFdKgzjqyo7nJ61bCse9ljF798K'
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    build: "./nginx"
+    ports:
+      - 80:80
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+  webserver:
+    container_name: webserver
+    restart: unless-stopped
+    build:             
+      context: "./webserver"
+      dockerfile: Dockerfile-dev
+      args:
+        - NODE_ENV=local
+    environment:
+      HOST: localhost
+      PORT: 80
+    depends_on:
+      - apollo
+      - nginx
+    volumes:
+      - type: bind
+        source: ./webserver
+        target: /app
+        read_only: false
+  apollo:
+    container_name: apollo
+    restart: unless-stopped
+    build: "./apollo"
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: rootpassword
+      DB_NAME: USER
+      DB_PORT: 27017
+      #ports:
+      #- 4000:4000
+    depends_on:
+      - database
+      - nginx
+  database:
+    container_name: database
+    restart: unless-stopped
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - type: volume
+        source: mongodb-data
+        target: /data/db
+volumes:
+  mongodb-data:
+  portainer_data:

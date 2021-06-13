@@ -1,54 +1,69 @@
 <template lang="html">
   <div>
-    <v-btn color="primary" dark @click.stop="dialogLogin = true"> Login </v-btn>
-
-    <v-btn color="primary" dark @click.stop="dialogSignup = true">
-      Sign Up
-    </v-btn>
-
-    <v-dialog v-model="dialogLogin" max-width="290">
-      <v-card color="accent" class="justify-center">
-        <v-col class="display-3" cols="12">
-          <v-text-field v-model="usernameLogin" label="Username" />
-          <v-text-field
-            v-model="passwordLogin"
-            label="Password"
-            type="password"
-          ></v-text-field>
-        </v-col>
-        <v-btn large block color="primary" @click="handleLoginClicked">
-          Login
+    <v-row align="center" justify="center">
+      <v-icon x-large>mdi-snowflake-alert</v-icon>
+      <h3>Cold-chain</h3>
+    </v-row>
+    <v-card v-if="loginForm" class="mx-auto" color="accent" max-width="290">
+      <v-card-title>Sign In</v-card-title>
+      <v-col class="display-3" cols="12">
+        <v-text-field
+          v-model="usernameLogin"
+          label="Username"
+          prepend-icon="mdi-account"
+        />
+        <v-text-field
+          v-model="passwordLogin"
+          label="Password"
+          type="password"
+          prepend-icon="mdi-lock"
+        />
+      </v-col>
+      <v-btn medium block color="primary" @click="handleSigninClicked">
+        Sign in
+      </v-btn>
+      <p>
+        Don't have an account yet?
+        <v-btn small text color="primary" dark @click.stop="loginForm = false">
+          Sign up
         </v-btn>
-        <v-alert v-model="errorLogin" dismissible type="error">
-          Username or Password was wrong, please try again.
-        </v-alert>
-      </v-card>
-    </v-dialog>
+      </p>
+      <v-alert v-model="errorLogin" dismissible type="error">
+        Username or Password was wrong, please try again.
+      </v-alert>
+    </v-card>
 
-    <v-dialog v-model="dialogSignup" max-width="290">
-      <v-card color="accent" class="justify-center">
-        <v-col class="display-3" cols="12">
-          <v-text-field
-            v-model="usernameSignup"
-            label="Username"
-          ></v-text-field>
-          <v-text-field
-            v-model="passwordSignup"
-            label="Password"
-            type="password"
-          ></v-text-field>
-        </v-col>
-        <v-btn large block color="primary" @click="handleSignupClicked">
-          Signup
+    <v-card v-else class="mx-auto" color="accent" max-width="290">
+      <v-card-title>Sign Up</v-card-title>
+      <v-col class="display-3" cols="12">
+        <v-text-field
+          v-model="usernameSignup"
+          label="Username"
+          prepend-icon="mdi-account"
+        />
+        <v-text-field
+          v-model="passwordSignup"
+          label="Password"
+          type="password"
+          prepend-icon="mdi-lock"
+        />
+      </v-col>
+      <v-btn medium block color="primary" @click="handleSignupClicked">
+        Sign up
+      </v-btn>
+      <p>
+        Already have an account?
+        <v-btn small text color="primary" dark @click.stop="loginForm = true">
+          Sign in
         </v-btn>
-        <v-alert v-model="successSignup" dismissible type="success">
-          Signup Success!
-        </v-alert>
-        <v-alert v-model="errorSignup" dismissible type="error">
-          this username already exist. Please use other username.
-        </v-alert>
-      </v-card>
-    </v-dialog>
+      </p>
+      <v-alert v-model="successSignup" dismissible type="success">
+        Sign up Success!
+      </v-alert>
+      <v-alert v-model="errorSignup" dismissible type="error">
+        this username already exist. Please use other username.
+      </v-alert>
+    </v-card>
   </div>
 </template>
 
@@ -58,8 +73,7 @@ export default {
   layout: 'session',
   data() {
     return {
-      dialogLogin: false,
-      dialogSignup: false,
+      loginForm: true,
       usernameLogin: '',
       passwordLogin: '',
       usernameSignup: '',
@@ -75,7 +89,7 @@ export default {
     }
   },
   methods: {
-    async handleLoginClicked() {
+    async handleSigninClicked() {
       try {
         const body = {
           query: `{

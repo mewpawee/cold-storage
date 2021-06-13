@@ -23,7 +23,6 @@ module.exports = {
     port: process.env.PORT || 3000,
     host: '0.0.0.0',
   },
-  mode: 'universal',
   /*
    ** Headers of the page
    */
@@ -70,6 +69,12 @@ module.exports = {
     '@nuxtjs/auth',
     '@nuxtjs/apollo',
     'nuxt-leaflet',
+    [
+      'nuxt-gmaps',
+      {
+        key: '<GOOGLEMAP_API_KEY>',
+      },
+    ],
   ],
   router: {
     middleware: ['auth'],
