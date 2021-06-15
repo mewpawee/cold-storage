@@ -72,7 +72,7 @@
       v-if="groupInfo"
       v-model="mapClicked"
       transition="dialog-bottom-transition"
-      width="auto "
+      width="auto"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card-text>

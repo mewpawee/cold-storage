@@ -36,7 +36,6 @@ export default {
 </script>
 <style lang="scss">
 .GMap__Wrapper {
-  width: 100vh;
-  height: 80vh;
+  width: 100%;
 }
 </style>

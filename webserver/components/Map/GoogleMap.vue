@@ -1,3 +1,4 @@
+%
 <template>
   <div v-if="location">
     <GMap
@@ -32,6 +33,6 @@ export default {
 <style lang="scss">
 .GMap__Wrapper {
   width: 100%;
-  height: 80vh;
+  // position: 'relative';
 }
 </style>

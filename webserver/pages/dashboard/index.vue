@@ -1,30 +1,42 @@
 <template lang="html">
-  <div v-if="groupData[0]">
-    <GoogleMap
-      :key="(groupData[0].lat, groupData[0].lng)"
-      :location="groupData[0]"
-    />
-    <RightDrawer :data="groupData" />
+  <div class="d-flex flex-wrap">
+    <v-card class="mx-4 my-12" min-width="344" width="40vw">
+      <Data :data="groupData" />
+    </v-card>
+    <v-card class="mx-4 my-12" min-width="344" width="40vw">
+      <GoogleMap
+        :key="(groupData[0].lat, groupData[0].lng)"
+        :location="groupData[0]"
+      />
+    </v-card>
   </div>
 </template>
 
 <script>
 import { getGroupInfo } from '@/utils/userApi'
 import GoogleMap from '@/components/Map/GoogleMap'
-import RightDrawer from '@/components/Map/RightDrawer'
+import Data from '@/components/Map/Data'
 export default {
   components: {
     GoogleMap,
-    RightDrawer,
+    Data,
   },
   middleware: 'auth',
   data() {
     return {
-      groupData: [],
+      groupData: [
+        {
+          data: 'nodata',
+          lat: 13.7563,
+          lng: 100.5018,
+          devices: 'nodata',
+        },
+      ],
       polling: null,
     }
   },
   async fetch() {
+    console.log(this.groupData)
     const todayDate = new Date(
       new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
     )
@@ -35,12 +47,17 @@ export default {
       todayDate,
       todayDate
     )
-    console.log(queryGroupInfo.data.groupData)
-    if (queryGroupInfo.data.groupData) {
+    if (
+      queryGroupInfo.data.groupData &&
+      queryGroupInfo.data.groupData.length > 0
+    ) {
       this.groupData = queryGroupInfo.data.groupData
     }
   },
   computed: {
+    size() {
+      return this.$nuxt.$vuetify.breakpoint.width / 1.7
+    },
     selectedGroupName: {
       get() {
         return this.$nuxt.$store.state.selectedGroupName
