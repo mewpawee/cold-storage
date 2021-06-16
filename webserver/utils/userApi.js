@@ -26,6 +26,24 @@ export function getUserGroup() {
   return request('POST', url, body, true)
 }
 
+export function getLatestGroupInfo(groupName) {
+  const url = `/graphql`
+  const body = {
+    query: `{
+      groupData(groupName:"${groupName}"){
+        date
+        lat
+        lng
+        devices{
+          deviceId
+          temp
+        }
+      }
+    }`,
+  }
+  return request('POST', url, body, true)
+}
+
 export function getGroupInfo(groupName, startDate, endDate) {
   const url = `/graphql`
   const body = {

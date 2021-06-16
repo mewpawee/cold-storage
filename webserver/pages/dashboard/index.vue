@@ -1,19 +1,48 @@
 <template lang="html">
-  <div class="d-flex flex-wrap">
-    <v-card class="mx-4 my-12" min-width="344" width="40vw">
-      <Data :data="groupData" />
-    </v-card>
-    <v-card class="mx-4 my-12" min-width="344" width="40vw">
-      <GoogleMap
-        :key="(groupData[0].lat, groupData[0].lng)"
-        :location="groupData[0]"
-      />
-    </v-card>
+  <div>
+    <div v-if="groupData == null">
+      <v-alert type="info" border="left"
+        >Haven't selected group or no data</v-alert
+      >
+      <div class="d-flex flex-wrap">
+        <v-skeleton-loader
+          type="card"
+          class="mx-auto my-12"
+          min-width="344"
+          width="40vw"
+          elevation="2"
+        />
+        <v-skeleton-loader
+          type="card"
+          class="mx-auto my-12"
+          min-width="344"
+          width="40vw"
+          elevation="2"
+        />
+      </div>
+    </div>
+
+    <div v-else class="d-flex flex-wrap">
+      <v-card class="mx-auto my-5" min-width="344" width="25vw" elevation="2">
+        <v-card-title>Latest Data</v-card-title>
+        <v-card-content>
+          <Data :data="groupData" />
+        </v-card-content>
+      </v-card>
+      <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
+        <v-card-content>
+          <GoogleMap
+            :key="(groupData[0].lat, groupData[0].lng)"
+            :location="groupData[0]"
+          />
+        </v-card-content>
+      </v-card>
+    </div>
   </div>
 </template>
 
 <script>
-import { getGroupInfo } from '@/utils/userApi'
+import { getLatestGroupInfo } from '@/utils/userApi'
 import GoogleMap from '@/components/Map/GoogleMap'
 import Data from '@/components/Map/Data'
 export default {
@@ -24,14 +53,7 @@ export default {
   middleware: 'auth',
   data() {
     return {
-      groupData: [
-        {
-          data: 'nodata',
-          lat: 13.7563,
-          lng: 100.5018,
-          devices: 'nodata',
-        },
-      ],
+      groupData: null,
       polling: null,
     }
   },
@@ -42,7 +64,7 @@ export default {
     )
       .toISOString()
       .split('T')[0]
-    const queryGroupInfo = await getGroupInfo(
+    const queryGroupInfo = await getLatestGroupInfo(
       this.selectedGroupName,
       todayDate,
       todayDate
@@ -52,6 +74,8 @@ export default {
       queryGroupInfo.data.groupData.length > 0
     ) {
       this.groupData = queryGroupInfo.data.groupData
+    } else {
+      this.groupData = null
     }
   },
   computed: {
