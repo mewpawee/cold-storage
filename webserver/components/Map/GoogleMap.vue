@@ -1,6 +1,6 @@
 %
 <template>
-  <div v-if="location">
+  <div v-if="location" :style="style">
     <GMap
       language="en"
       :center="{ lat: location.lat, lng: location.lng }"
@@ -21,7 +21,13 @@
 export default {
   props: ['location'],
   data() {
-    return {}
+    return {
+      style: {
+        height: '20vw',
+        minHeight: '200px',
+        width: '100%',
+      },
+    }
   },
   methods: {
     onMarkerClicked() {

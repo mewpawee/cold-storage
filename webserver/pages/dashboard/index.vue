@@ -58,17 +58,12 @@ export default {
     }
   },
   async fetch() {
-    console.log(this.groupData)
-    const todayDate = new Date(
-      new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-    )
-      .toISOString()
-      .split('T')[0]
-    const queryGroupInfo = await getLatestGroupInfo(
-      this.selectedGroupName,
-      todayDate,
-      todayDate
-    )
+    // const todayDate = new Date(
+    //   new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
+    // )
+    //   .toISOString()
+    //   .split('T')[0]
+    const queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName, 1)
     if (
       queryGroupInfo.data.groupData &&
       queryGroupInfo.data.groupData.length > 0

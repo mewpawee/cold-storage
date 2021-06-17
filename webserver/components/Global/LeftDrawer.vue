@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="leftDrawer" clipped fixed app>
+  <v-navigation-drawer v-model="drawer" clipped fixed app>
     <v-list>
       <v-list-item
         v-for="(item, i) in items"
@@ -38,7 +38,7 @@ export default {
     }
   },
   computed: {
-    leftDrawer: {
+    drawer: {
       get() {
         return this.$nuxt.$store.state.leftDrawer.status
       },
