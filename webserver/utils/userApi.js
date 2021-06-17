@@ -1,4 +1,5 @@
 import { request } from './api'
+
 export function createUser(username, password) {
   const url = `/graphql`
   const body = {
@@ -19,6 +20,24 @@ export function getUserGroup() {
       user{
         groups{
           groupName
+        }
+      }
+    }`,
+  }
+  return request('POST', url, body, true)
+}
+
+export function getLatestGroupInfo(groupName, limit = 5000) {
+  const url = `/graphql`
+  const body = {
+    query: `{
+      groupData(groupName:"${groupName}",limit:${limit}){
+        date
+        lat
+        lng
+        devices{
+          deviceId
+          temp
         }
       }
     }`,

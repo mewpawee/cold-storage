@@ -18,7 +18,7 @@
       </v-col>
     </v-row>
     <v-spacer />
-    <v-toolbar-title v-text="user" />
+    <v-toolbar-title v-text="user" class="d-none d-md-flex" />
     <v-btn icon @click.stop="signOut">
       <v-icon>mdi-export</v-icon>
     </v-btn>

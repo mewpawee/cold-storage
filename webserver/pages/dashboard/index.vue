@@ -1,46 +1,82 @@
 <template lang="html">
-  <div v-if="groupData[0]">
-    <GoogleMap
-      :key="(groupData[0].lat, groupData[0].lng)"
-      :location="groupData[0]"
-    />
-    <RightDrawer :data="groupData" />
+  <div>
+    <div v-if="groupData == null">
+      <v-alert type="info" border="left"
+        >Haven't selected group or no data</v-alert
+      >
+      <div class="d-flex flex-wrap">
+        <v-skeleton-loader
+          type="card"
+          class="mx-auto my-12"
+          min-width="344"
+          width="40vw"
+          elevation="2"
+        />
+        <v-skeleton-loader
+          type="card"
+          class="mx-auto my-12"
+          min-width="344"
+          width="40vw"
+          elevation="2"
+        />
+      </div>
+    </div>
+
+    <div v-else class="d-flex flex-wrap">
+      <v-card class="mx-auto my-5" min-width="344" width="25vw" elevation="2">
+        <v-card-title>Latest Data</v-card-title>
+        <v-card-content>
+          <Data :data="groupData" />
+        </v-card-content>
+      </v-card>
+      <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
+        <v-card-content>
+          <GoogleMap
+            :key="(groupData[0].lat, groupData[0].lng)"
+            :location="groupData[0]"
+          />
+        </v-card-content>
+      </v-card>
+    </div>
   </div>
 </template>
 
 <script>
-import { getGroupInfo } from '@/utils/userApi'
+import { getLatestGroupInfo } from '@/utils/userApi'
 import GoogleMap from '@/components/Map/GoogleMap'
-import RightDrawer from '@/components/Map/RightDrawer'
+import Data from '@/components/Map/Data'
 export default {
   components: {
     GoogleMap,
-    RightDrawer,
+    Data,
   },
   middleware: 'auth',
   data() {
     return {
-      groupData: [],
+      groupData: null,
       polling: null,
     }
   },
   async fetch() {
-    const todayDate = new Date(
-      new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-    )
-      .toISOString()
-      .split('T')[0]
-    const queryGroupInfo = await getGroupInfo(
-      this.selectedGroupName,
-      todayDate,
-      todayDate
-    )
-    console.log(queryGroupInfo.data.groupData)
-    if (queryGroupInfo.data.groupData) {
+    // const todayDate = new Date(
+    //   new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
+    // )
+    //   .toISOString()
+    //   .split('T')[0]
+    const queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName, 1)
+    if (
+      queryGroupInfo.data.groupData &&
+      queryGroupInfo.data.groupData.length > 0
+    ) {
       this.groupData = queryGroupInfo.data.groupData
+    } else {
+      this.groupData = null
     }
   },
   computed: {
+    size() {
+      return this.$nuxt.$vuetify.breakpoint.width / 1.7
+    },
     selectedGroupName: {
       get() {
         return this.$nuxt.$store.state.selectedGroupName

@@ -9,7 +9,7 @@
           offset-y
           min-width="290px"
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-text-field
               v-model="dates"
               label="Pick Start and End Dates"
@@ -29,13 +29,16 @@
       <v-col cols="6" sm="3">
         <v-text-field v-model="alertThreshold" label="Alert Threshold" />
       </v-col>
+      <v-col cols="6" sm="3">
+        <v-btn @click.stop="handleGenerateCSV">Get CSV</v-btn>
+      </v-col>
     </v-row>
     <v-data-table
       :key="selectedGroupName"
       :headers="headers"
       :items="groupInfo"
       sort-by="date"
-      sort-desc="false"
+      :sort-desc="sort"
       class="elevation-1"
     >
       <template #[`item.date`]="{ item }">
@@ -72,39 +75,28 @@
       v-if="groupInfo"
       v-model="mapClicked"
       transition="dialog-bottom-transition"
-      width="auto "
-      :fullscreen="$vuetify.breakpoint.xsOnly"
+      width="80vw"
     >
-      <v-card-text>
-        <PopMap
-          :key="(groupInfo.date, groupInfo.deviceId, currentPosition)"
-          :location="currentPosition"
-      /></v-card-text>
+      <PopMap
+        :key="(groupInfo.date, groupInfo.deviceId, currentPosition)"
+        :location="currentPosition"
+      />
     </v-dialog>
   </div>
 </template>
 
 <script>
 import PopMap from '@/components/Map/PopMap'
-import { getGroupInfo } from '@/utils/userApi'
+import { getGroupInfo, getLatestGroupInfo } from '@/utils/userApi'
+import { download } from '@/utils/api'
 export default {
   components: {
     PopMap,
   },
   data: () => ({
+    sort: true,
     polling: null,
-    dates: [
-      new Date(
-        new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-      )
-        .toISOString()
-        .split('T')[0],
-      new Date(
-        new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-      )
-        .toISOString()
-        .split('T')[0],
-    ],
+    dates: [],
     alertThreshold: 23.5,
     currentPosition: {},
     mapClicked: false,
@@ -128,12 +120,16 @@ export default {
     },
   }),
   async fetch() {
-    const queryGroupInfo = await getGroupInfo(
-      this.selectedGroupName,
-      this.dates[0],
-      this.dates[1]
-    )
-    console.log(queryGroupInfo)
+    let queryGroupInfo
+    if (this.dates[0] && this.dates[1]) {
+      queryGroupInfo = await getGroupInfo(
+        this.selectedGroupName,
+        this.dates[0],
+        this.dates[1]
+      )
+    } else {
+      queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
+    }
     const result = await this.manipulateData(queryGroupInfo.data.groupData)
     this.groupInfo = result
   },
@@ -168,6 +164,9 @@ export default {
       this.polling = setInterval(() => {
         this.$fetch()
       }, 3000)
+    },
+    async handleGenerateCSV() {
+      await download('/api/generateCSV', this.groupInfo)
     },
     handlePickedDates() {
       this.$fetch()

@@ -4,6 +4,7 @@
       <v-icon x-large>mdi-snowflake-alert</v-icon>
       <h3>Cold-chain</h3>
     </v-row>
+    <br />
     <v-card v-if="loginForm" class="mx-auto" color="accent" max-width="290">
       <v-card-title>Sign In</v-card-title>
       <v-col class="display-3" cols="12">

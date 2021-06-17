@@ -51,17 +51,20 @@ export default {
         throw new AuthenticationError("You are not authenticated");
       }
 
-      if (startDate === undefined) {
-        startDate = new Date();
-      }
-      if (endDate === undefined) {
-        endDate = new Date();
-      }
-
       const userGroup = await UserGroup.findOne({
         user: me._id,
         groupName: groupName,
       });
+
+      if (startDate === undefined || endDate === undefined) {
+        const groupData = await GroupData.find({
+          group: userGroup._id,
+        })
+          .limit(limit)
+          .exec();
+        return groupData;
+      }
+      
       const start = moment(new Date(startDate), "YYYY-MM-DD")
         .utcOffset("+0700")
         .startOf("day");
