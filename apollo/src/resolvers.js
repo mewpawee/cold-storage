@@ -60,11 +60,12 @@ export default {
         const groupData = await GroupData.find({
           group: userGroup._id,
         })
+          .sort({ date: -1 })
           .limit(limit)
           .exec();
         return groupData;
       }
-      
+
       const start = moment(new Date(startDate), "YYYY-MM-DD")
         .utcOffset("+0700")
         .startOf("day");
