@@ -20,16 +20,14 @@
         </v-list-item>
       </template>
       <template v-else-if="name == 'devices'">
-        <v-expansion-panels multiple :key="name">
-          <v-expansion-panel v-for="(item, i) in value" :key="i">
-            <v-expansion-panel-header>
-              DeviceId: {{ item.deviceId }}
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-list-item-content>Temp: {{ item.temp }} </v-list-item-content>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+        <v-list-item v-for="(item, i) in value" :key="i">
+          <v-list-item-content>
+            DeviceId: {{ item.deviceId }}
+          </v-list-item-content>
+          <v-list-item-content class="align-end">
+            <v-chip color="green" dark> Temp: {{ item.temp }} </v-chip>
+          </v-list-item-content>
+        </v-list-item>
       </template>
     </template>
   </div>
