@@ -7,6 +7,7 @@ export default gql`
     _id: ID!
     username: String!
     groups: [UserGroup]
+    mapper: [DeviceMapper]
   }
 
   type Token {
@@ -34,6 +35,12 @@ export default gql`
     temp: Float!
   }
 
+  type DeviceMapper {
+    _id: ID!
+    deviceUUID: String!
+    deviceId: String!
+  }
+
   type Query {
     user: User!
     login(username: String!, password: String): Token!
@@ -44,6 +51,7 @@ export default gql`
       startDate: Date
       endDate: Date
     ): [GroupData]
+    deviceMapper(deviceUUID: String!): DeviceMapper!
   }
 
   type Mutation {
@@ -56,10 +64,15 @@ export default gql`
       lng: Float!
       devices: [device]
     ): GroupData
+    addDeviceMapper(
+      username: String!
+      deviceUUID: String!
+      deviceId: String!
+    ): DeviceMapper!
   }
 
   input device {
-    deviceId: String!
+    deviceUUID: String!
     temp: Float!
   }
 `;

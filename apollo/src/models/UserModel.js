@@ -16,6 +16,12 @@ const userSchema = new Schema({
       ref: "userGroup",
     },
   ],
+  mapper: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "deviceMapper",
+    },
+  ],
 });
 
 userSchema.pre("save", function () {
@@ -36,6 +42,7 @@ const userGroupSchema = new Schema({
       ref: "groupData",
     },
   ],
+  deviceMapper: [{ type: mongoose.Schema.Types.ObjectId, ref: "deviceMapper" }],
 });
 
 const groupDataSchema = new Schema({
@@ -45,7 +52,7 @@ const groupDataSchema = new Schema({
     required: true,
   },
   date: { type: Date, required: true },
-  dateString: {type: String},
+  dateString: { type: String },
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
   devices: [{ type: mongoose.Schema.Types.ObjectId, ref: "device" }],
@@ -61,6 +68,16 @@ const deviceSchema = new Schema({
   temp: { type: Number, required: true },
 });
 
+const deviceMapperSchema = new Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  deviceId: { type: String, require: true, unique: true },
+  deviceUUID: { type: String, required: true },
+});
+
 export const User = mongoose.model("user", userSchema, "user");
 export const UserGroup = mongoose.model(
   "userGroup",
@@ -73,5 +90,10 @@ export const GroupData = mongoose.model(
   "groupData"
 );
 export const Device = mongoose.model("device", deviceSchema, "device");
+export const DeviceMapper = mongoose.model(
+  "deviceMapper",
+  deviceMapperSchema,
+  "deviceMapper"
+);
 
-export default { User, UserGroup, GroupData, Device };
+export default { User, UserGroup, GroupData, Device, DeviceMapper };

@@ -18,7 +18,7 @@ app.all('/submit', async (req, res) => {
     const { username, groupName, lat, lng, devices } = req.body
     const devicesString = JSON.stringify(devices)
       .toString()
-      .replace(/"deviceId"/g, 'deviceId')
+      .replace(/"deviceUUID"/g, 'deviceUUID')
       .replace(/"temp"/g, 'temp')
     const response = await addData(username, groupName, lat, lng, devicesString)
     res.status(200).json(response)

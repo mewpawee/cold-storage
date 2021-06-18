@@ -1,4 +1,10 @@
-import { User, UserGroup, GroupData, Device } from "./models/UserModel";
+import {
+  User,
+  UserGroup,
+  GroupData,
+  Device,
+  DeviceMapper,
+} from "./models/UserModel";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { AuthenticationError } from "apollo-server";
@@ -85,6 +91,16 @@ export default {
       console.log(startDate, endDate);
       return groupData;
     },
+    deviceMapper: async (parent, { deviceUUID }) => {
+      // if (!me) {
+      //   throw new AuthenticationError("You are not authenticated");
+      // }
+      const deviceMapper = await DeviceMapper.findOne({
+        deviceUUID: deviceUUID,
+      }).exec();
+
+      return deviceMapper;
+    },
   },
 
   Mutation: {
@@ -95,6 +111,22 @@ export default {
     addUserGroup: async (parent, { username, groupName }, info) => {
       const user = await User.findOne({ username: username });
       return await UserGroup.create({ user: user._id, groupName: groupName });
+    },
+    addDeviceMapper: async (
+      parent,
+      { username, deviceUUID, deviceId },
+      info
+    ) => {
+      const user = await User.findOne({ username: username });
+      const result = await DeviceMapper.findOneAndUpdate(
+        {
+          user: user._id,
+          deviceId: deviceId,
+        },
+        { user: user._id, deviceId: deviceId, deviceUUID: deviceUUID },
+        { upsert: true, new: true }
+      );
+      return result;
     },
     addGroupData: async (
       parent,
@@ -124,15 +156,19 @@ export default {
         lng: lng,
       });
       for (const device of devices) {
+        const deviceMapper = await DeviceMapper.findOne({
+          deviceUUID: device.deviceUUID,
+        });
         await Device.create({
           groupData: groupData._id,
-          deviceId: device.deviceId,
+          deviceId: deviceMapper.deviceId,
           temp: device.temp,
         });
       }
       return groupData;
     },
   },
+
   User: {
     groups: async ({ _id }, args, _, info) => {
       const groups = await UserGroup.find({ user: _id }).exec();
