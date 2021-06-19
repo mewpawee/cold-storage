@@ -31,6 +31,11 @@
       </v-card>
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
         <v-card-content>
+          <LineChart />
+        </v-card-content>
+      </v-card>
+      <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
+        <v-card-content>
           <GoogleMap
             :key="(groupData[0].lat, groupData[0].lng)"
             :location="groupData[0]"
@@ -45,10 +50,12 @@
 import { getLatestGroupInfo } from '@/utils/userApi'
 import GoogleMap from '@/components/Map/GoogleMap'
 import Data from '@/components/Map/Data'
+import LineChart from '@/components/Chart/LineChart.vue'
 export default {
   components: {
     GoogleMap,
     Data,
+    LineChart,
   },
   middleware: 'auth',
   data() {
