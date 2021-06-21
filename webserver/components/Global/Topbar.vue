@@ -33,13 +33,6 @@ export default {
     return {
       title: 'Cold-chain',
       user: '',
-      statusProxy: null,
-      // dateProxy: new Date(
-      //   new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-      // )
-      //   .toISOString()
-      //   .split('T')[0],
-      groupInfo: null,
       polling: null,
     }
   },
@@ -50,39 +43,12 @@ export default {
   fetchDelay: 1000,
   fetchOnServer: false,
   computed: {
-    // date: {
-    //   get() {
-    //     return this.dateProxy
-    //   },
-    //   async set(val) {
-    //     this.dateProxy = val
-    //     if (this.selectedGroup) {
-    //       this.groupInfo = await getGroupInfo(
-    //         this.selectedGroup,
-    //         this.date,
-    //         this.date
-    //       )
-    //       this.$store.commit(
-    //         'set_selected_group',
-    //         this.groupInfo.data.groupData
-    //       )
-    //     }
-    //   },
-    // },
     selectedGroup: {
       get() {
-        return this.statusProxy === null ? '' : this.statusProxy
+        return this.$nuxt.$store.state.selectedGroupName
       },
       set(val) {
-        this.statusProxy = val
-        this.$store.commit('set_selected_group_name', this.selectedGroup)
-        // if (this.date) {
-        //   this.groupInfo = await getGroupInfo(val, this.date, this.date)
-        //   this.$store.commit(
-        //     'set_selected_group',
-        //     this.groupInfo.data.groupData
-        //   )
-        // }
+        this.$store.commit('set_selected_group_name', val)
       },
     },
     groups: {
@@ -98,17 +64,11 @@ export default {
     this.user = 'Welcome, ' + this.$nuxt.$auth.user.username + '!'
   },
   methods: {
-    // pollData() {
-    //   this.polling = setInterval(async () => {
-    //     if (this.date && this.selectedGroup) {
-    //       this.groupInfo = await getGroupInfo(this.selectedGroup, this.date)
-    //       this.$store.commit(
-    //         'set_selected_group',
-    //         this.groupInfo.data.groupData
-    //       )
-    //     }
-    //   }, 10000)
-    // },
+    pollData() {
+      this.polling = setInterval(() => {
+        this.$fetch()
+      }, 3000)
+    },
     signOut() {
       this.$auth.logout('local')
     },
@@ -122,12 +82,11 @@ export default {
       )
     },
   },
-  // beforeDestroy() {
-  //   clearInterval(this.polling)
-  // },
-  // created() {
-  //   this.pollData()
-  // },
+  beforeDestroy() {
+    clearInterval(this.polling)
+  },
+  created() {
+    this.pollData()
+  },
 }
 </script>
->

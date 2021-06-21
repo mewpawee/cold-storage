@@ -12,7 +12,7 @@
             new Date(value).toLocaleString().split(',')[0]
           }}</v-list-item-content>
         </v-list-item>
-        <v-list-item :key="name">
+        <v-list-item :key="name + value">
           <v-list-item-content>Time: </v-list-item-content>
           <v-list-item-content class="align-end">{{
             new Date(value).toLocaleString().split(',')[1]

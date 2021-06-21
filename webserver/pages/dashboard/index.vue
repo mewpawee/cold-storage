@@ -25,22 +25,16 @@
     <div v-else class="d-flex flex-wrap">
       <v-card class="mx-auto my-5" min-width="344" width="25vw" elevation="2">
         <v-card-title>Latest Data</v-card-title>
-        <v-card-content>
-          <Data :data="groupData" />
-        </v-card-content>
+        <Data :data="groupData" />
       </v-card>
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
-        <v-card-content>
-          <LineChart />
-        </v-card-content>
+        <LineChart :group="selectedGroupName" />
       </v-card>
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
-        <v-card-content>
-          <GoogleMap
-            :key="(groupData[0].lat, groupData[0].lng)"
-            :location="groupData[0]"
-          />
-        </v-card-content>
+        <GoogleMap
+          :key="(groupData[0].lat, groupData[0].lng)"
+          :location="groupData[0]"
+        />
       </v-card>
     </div>
   </div>
@@ -65,11 +59,6 @@ export default {
     }
   },
   async fetch() {
-    // const todayDate = new Date(
-    //   new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000
-    // )
-    //   .toISOString()
-    //   .split('T')[0]
     const queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName, 1)
     if (
       queryGroupInfo.data.groupData &&
@@ -95,12 +84,6 @@ export default {
       this.$fetch()
     },
   },
-  activated() {
-    // Call fetch again if last fetch more than 30 sec ago
-    if (this.$fetchState.timestamp <= Date.now() - 30000) {
-      this.$fetch()
-    }
-  },
   beforeDestroy() {
     clearInterval(this.polling)
   },
@@ -112,9 +95,6 @@ export default {
       this.polling = setInterval(() => {
         this.$fetch()
       }, 3000)
-    },
-    onMarkerClicked() {
-      this.$store.commit('set_right_drawer', true)
     },
   },
 }

@@ -10,7 +10,6 @@
       <GMapMarker
         :key="location.id"
         :position="{ lat: location.lat, lng: location.lng }"
-        @click="onMarkerClicked()"
       >
       </GMapMarker>
     </GMap>
@@ -28,11 +27,6 @@ export default {
         width: '100%',
       },
     }
-  },
-  methods: {
-    onMarkerClicked() {
-      this.$store.commit('set_right_drawer', true)
-    },
   },
 }
 </script>

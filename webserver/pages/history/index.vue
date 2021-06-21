@@ -78,7 +78,7 @@
       width="80vw"
     >
       <PopMap
-        :key="(groupInfo.date, groupInfo.deviceId, currentPosition)"
+        :key="groupInfo.date + groupInfo.deviceId + currentPosition"
         :location="currentPosition"
       />
     </v-dialog>
@@ -93,32 +93,34 @@ export default {
   components: {
     PopMap,
   },
-  data: () => ({
-    sort: true,
-    polling: null,
-    dates: [],
-    alertThreshold: 23.5,
-    currentPosition: {},
-    mapClicked: false,
-    dialogDelete: false,
-    groupInfo: [],
-    headers: [
-      { text: 'Date, Time', value: 'date' },
-      { text: 'Device ID', value: 'deviceId' },
-      { text: 'Temp', value: 'temp' },
-      { text: 'Lat', value: 'lat' },
-      { text: 'Lng', value: 'lng' },
-      { text: 'Map', value: 'map' },
-      { text: 'Status', value: 'status' },
-    ],
-    editedIndex: -1,
-    editedItem: {
-      name: '',
-    },
-    defaultItem: {
-      name: '',
-    },
-  }),
+  data() {
+    return {
+      sort: true,
+      polling: null,
+      dates: [],
+      alertThreshold: 23.5,
+      currentPosition: {},
+      mapClicked: false,
+      dialogDelete: false,
+      groupInfo: [],
+      headers: [
+        { text: 'Date, Time', value: 'date' },
+        { text: 'Device ID', value: 'deviceId' },
+        { text: 'Temp', value: 'temp' },
+        { text: 'Lat', value: 'lat' },
+        { text: 'Lng', value: 'lng' },
+        { text: 'Map', value: 'map' },
+        { text: 'Status', value: 'status' },
+      ],
+      editedIndex: -1,
+      editedItem: {
+        name: '',
+      },
+      defaultItem: {
+        name: '',
+      },
+    }
+  },
   async fetch() {
     let queryGroupInfo
     if (this.dates[0] && this.dates[1]) {
@@ -130,8 +132,13 @@ export default {
     } else {
       queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
     }
-    const result = await this.manipulateData(queryGroupInfo.data.groupData)
-    this.groupInfo = result
+    if (
+      queryGroupInfo.data.groupData &&
+      queryGroupInfo.data.groupData.length > 0
+    ) {
+      const result = await this.manipulateData(queryGroupInfo.data.groupData)
+      this.groupInfo = result
+    }
   },
   fetchDelay: 1000,
   fetchOnServer: false,
@@ -146,12 +153,6 @@ export default {
     selectedGroupName() {
       this.$fetch()
     },
-  },
-  activated() {
-    // Call fetch again if last fetch more than 30 sec ago
-    if (this.$fetchState.timestamp <= Date.now() - 5000) {
-      this.$fetch()
-    }
   },
   beforeDestroy() {
     clearInterval(this.polling)

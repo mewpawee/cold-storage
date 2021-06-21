@@ -1,6 +1,4 @@
 export const state = () => ({
-  leftDrawer: false,
-  rightDrawer: false,
   miniVariant: false,
   groups: [],
   selectedGroupName: null,
@@ -12,18 +10,5 @@ export const mutations = {
   },
   set_groups(state, newGroups) {
     state.groups = newGroups
-  },
-  set_minivariant(state, newMiniVariant) {
-    state.miniVariant = newMiniVariant
-  },
-  set_right_drawer(state, newRightDrawerState) {
-    state.rightDrawer = newRightDrawerState
-  },
-  set_truck_info(state, newTruckInfo) {
-    state.truck.id = newTruckInfo._id
-    state.truck.name = newTruckInfo.truckName
-    state.truck.temp = newTruckInfo.trucksData[0].temp
-    state.truck.lat = newTruckInfo.trucksData[0].lat
-    state.truck.lng = newTruckInfo.trucksData[0].lng
   },
 }
