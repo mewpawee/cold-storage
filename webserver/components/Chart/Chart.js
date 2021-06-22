@@ -90,10 +90,10 @@ export default {
         },
         plugins: {
           zoom: {
-            // pan: {
-            //   enabled: true,
-            //   mode: 'xy',
-            // },
+            pan: {
+              enabled: true,
+              mode: 'x',
+            },
             zoom: {
               enabled: true,
               mode: 'x',
