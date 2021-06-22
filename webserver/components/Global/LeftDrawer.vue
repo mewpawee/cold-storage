@@ -34,6 +34,11 @@ export default {
           title: 'History',
           to: { name: 'history' },
         },
+        {
+          icon: 'mdi-cog-outline',
+          title: 'Settings',
+          to: { name: 'settings' },
+        },
       ],
     }
   },
