@@ -8,7 +8,11 @@
       :disabled="t == hour"
       >{{ t }}h</v-btn
     >
-    <line-chart :chart-data="chartData" />
+    <line-chart
+      :hour="this.hour"
+      :options="this.options"
+      :chart-data="chartData"
+    />
   </div>
 </template>
 
@@ -103,6 +107,108 @@ export default {
   },
   created() {
     this.pollData()
+  },
+  computed: {
+    maximumThreshold() {
+      return this.$nuxt.$store.state.settings.maximumThreshold
+    },
+    minimumThreshold() {
+      return this.$nuxt.$store.state.settings.minimumThreshold
+    },
+    options() {
+      return {
+        animation: {
+          duration: 0,
+        },
+        annotation: {
+          annotations: [
+            {
+              // drawTime: 'afterDraw', // overrides annotation.drawTime if set
+              type: 'line',
+              mode: 'horizontal',
+              scaleID: 'y-axis-0',
+              value: `${this.maximumThreshold}`,
+              borderColor: 'rgba(255, 0, 0, 0.5)',
+              borderWidth: 1,
+              borderDash: [10],
+              label: {
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                enabled: true,
+                content: 'Maximum Threshold',
+              },
+            },
+            {
+              drawTime: 'beforeDatasetsDraw', // overrides annotation.drawTime if set
+              type: 'line',
+              mode: 'horizontal',
+              scaleID: 'y-axis-0',
+              value: `${this.minimumThreshold}`,
+              borderColor: 'rgba(65, 105, 225, 0.5)',
+              borderWidth: 1,
+              borderDash: [10],
+              label: {
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                enabled: true,
+                content: 'Minimum Threshold',
+              },
+            },
+          ],
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: true,
+        },
+        title: {
+          display: true,
+          text: 'Device Data',
+        },
+        scales: {
+          xAxes: [
+            {
+              scaleLabel: {
+                display: true,
+                labelString: 'Time',
+              },
+              type: 'time',
+              // time: {
+              //   unit: 'second',
+              //   unitStepSize: 1,
+              //   displayFormats: {
+              //     second: 'h:m:s',
+              //   },
+              // },
+            },
+          ],
+          yAxes: [
+            {
+              scaleLabel: {
+                display: true,
+                labelString: 'Temperature',
+              },
+              ticks: {
+                beginAtZero: false,
+                callback: (value, index, values) => {
+                  return value + '°C'
+                },
+              },
+            },
+          ],
+        },
+        plugins: {
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: 'x',
+            },
+            zoom: {
+              enabled: true,
+              mode: 'x',
+            },
+          },
+        },
+      }
+    },
   },
   methods: {
     pollData() {

@@ -21,6 +21,8 @@ export function getUserGroup() {
         groups{
           groupName
         }
+        minThreshold
+        maxThreshold
       }
     }`,
   }
@@ -120,4 +122,18 @@ export function addData(username, groupName, lat, lng, devices) {
     }`,
   }
   return request('POST', url, body, false)
+}
+
+export function setThreshold(minimum, maximum) {
+  const url = '/graphql'
+  const body = {
+    query: `mutation{
+      changeThreshold(minThreshold:${minimum},maxThreshold:${maximum}){
+        maxThreshold
+        minThreshold
+        username
+      }
+    }`,
+  }
+  return request('POST', url, body, true)
 }

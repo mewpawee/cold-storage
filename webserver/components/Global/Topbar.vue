@@ -39,6 +39,8 @@ export default {
   async fetch() {
     const userGroups = await getUserGroup()
     this.$store.commit('set_groups', userGroups.data.user.groups)
+    this.$store.commit('settings/setMaximum', userGroups.data.user.maxThreshold)
+    this.$store.commit('settings/setMinimum', userGroups.data.user.minThreshold)
   },
   fetchDelay: 1000,
   fetchOnServer: false,

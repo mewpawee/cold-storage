@@ -8,6 +8,8 @@ export default gql`
     username: String!
     groups: [UserGroup]
     mapper: [DeviceMapper]
+    minThreshold: Float
+    maxThreshold: Float
   }
 
   type Token {
@@ -56,6 +58,7 @@ export default gql`
 
   type Mutation {
     createUser(username: String!, password: String!): User!
+    changeThreshold(minThreshold: Float, maxThreshold: Float): User!
     addUserGroup(username: String!, groupName: String!): UserGroup!
     addGroupData(
       username: String!

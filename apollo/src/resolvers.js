@@ -108,6 +108,24 @@ export default {
       const user = await User.create({ username, password });
       return user;
     },
+    changeThreshold: async (
+      parent,
+      { minThreshold, maxThreshold },
+      { me },
+      info
+    ) => {
+      if (!me) {
+        throw new AuthenticationError("You are not authenticated");
+      }
+      const result = await User.findOneAndUpdate(
+        {
+          _id: me._id,
+        },
+        { minThreshold: minThreshold, maxThreshold: maxThreshold },
+        { new: true }
+      );
+      return result;
+    },
     addUserGroup: async (parent, { username, groupName }, info) => {
       const user = await User.findOne({ username: username });
       return await UserGroup.create({ user: user._id, groupName: groupName });

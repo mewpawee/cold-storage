@@ -25,6 +25,11 @@
     <div v-else class="d-flex flex-wrap">
       <v-card class="mx-auto my-5" min-width="344" width="25vw" elevation="2">
         <v-card-title>Latest Data</v-card-title>
+        <v-card-subtitle
+          ><strong>Threshold:</strong> minimum:
+          <strong>{{ minimumThreshold }} °C</strong> maximum:
+          <strong>{{ maximumThreshold }} °C</strong></v-card-subtitle
+        >
         <Data :data="groupData" />
       </v-card>
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
@@ -77,6 +82,12 @@ export default {
       get() {
         return this.$nuxt.$store.state.selectedGroupName
       },
+    },
+    maximumThreshold() {
+      return this.$nuxt.$store.state.settings.maximumThreshold
+    },
+    minimumThreshold() {
+      return this.$nuxt.$store.state.settings.minimumThreshold
     },
   },
   watch: {

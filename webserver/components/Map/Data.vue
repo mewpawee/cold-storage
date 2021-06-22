@@ -25,7 +25,12 @@
             DeviceId: {{ item.deviceId }}
           </v-list-item-content>
           <v-list-item-content class="align-end">
-            <v-chip color="green" dark> Temp: {{ item.temp }} </v-chip>
+            <v-chip
+              :color="getColor(item.temp, maximumThreshold, minimumThreshold)"
+              dark
+            >
+              Temp: {{ item.temp }} °C
+            </v-chip>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -42,10 +47,21 @@ export default {
     }
   },
   computed: {
-    selectedGroup: {
-      get() {
-        return this.$nuxt.$store.state.selectedGroup
-      },
+    selectedGroup() {
+      return this.$nuxt.$store.state.selectedGroup
+    },
+    maximumThreshold() {
+      return this.$nuxt.$store.state.settings.maximumThreshold
+    },
+    minimumThreshold() {
+      return this.$nuxt.$store.state.settings.minimumThreshold
+    },
+  },
+  methods: {
+    getColor(temp, maximum, minimum) {
+      if (temp > maximum) return 'red'
+      else if (temp < minimum) return 'blue'
+      else return 'green'
     },
   },
 }

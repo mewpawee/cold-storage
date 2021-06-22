@@ -22,6 +22,8 @@ const userSchema = new Schema({
       ref: "deviceMapper",
     },
   ],
+  minThreshold: { type: Number },
+  maxThreshold: { type: Number },
 });
 
 userSchema.pre("save", function () {
