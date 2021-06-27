@@ -21,28 +21,44 @@
 
 <script>
 export default {
-  data() {
-    return {
-      items: [
-        {
-          icon: 'mdi-monitor-dashboard',
-          title: 'Dashboard',
-          to: { name: 'dashboard' },
-        },
-        {
-          icon: 'mdi-history',
-          title: 'History',
-          to: { name: 'history' },
-        },
-        {
-          icon: 'mdi-cog-outline',
-          title: 'Settings',
-          to: { name: 'settings' },
-        },
-      ],
-    }
-  },
   computed: {
+    role() {
+      return this.$nuxt.$auth.user.role
+    },
+    items() {
+      if (this.role === 'admin') {
+        return [
+          {
+            icon: 'mdi-monitor-dashboard',
+            title: 'Dashboard',
+            to: { name: 'dashboard' },
+          },
+          {
+            icon: 'mdi-history',
+            title: 'History',
+            to: { name: 'history' },
+          },
+          {
+            icon: 'mdi-cog-outline',
+            title: 'Settings',
+            to: { name: 'settings' },
+          },
+        ]
+      } else {
+        return [
+          {
+            icon: 'mdi-monitor-dashboard',
+            title: 'Dashboard',
+            to: { name: 'dashboard' },
+          },
+          {
+            icon: 'mdi-history',
+            title: 'History',
+            to: { name: 'history' },
+          },
+        ]
+      }
+    },
     drawer: {
       get() {
         return this.$nuxt.$store.state.leftDrawer.status

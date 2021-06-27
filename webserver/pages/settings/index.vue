@@ -39,6 +39,7 @@
 <script>
 import { setThreshold } from '@/utils/userApi'
 export default {
+  middleware: 'isAdmin',
   data() {
     return {
       submit: false,

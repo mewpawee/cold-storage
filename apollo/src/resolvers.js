@@ -39,9 +39,13 @@ export default {
         throw new AuthenticationError("Invalid credentials");
       }
 
-      const token = jwt.sign({ _id: user.id }, "riddlemethis", {
-        expiresIn: 24 * 10 * 50,
-      });
+      const token = jwt.sign(
+        { _id: user.id, role: user.role },
+        "riddlemethis",
+        {
+          expiresIn: 24 * 10 * 50,
+        }
+      );
 
       return {
         token: token,
@@ -104,8 +108,13 @@ export default {
   },
 
   Mutation: {
-    createUser: async (parent, { username, password }, info) => {
-      const user = await User.create({ username, password });
+    createUser: async (parent, { username, password, company }, info) => {
+      const user = await User.create({
+        username: username,
+        password: password,
+        role: "user",
+        company: company,
+      });
       return user;
     },
     changeThreshold: async (

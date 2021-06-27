@@ -4,6 +4,7 @@ const userRequest = {
    user{
      _id
      username
+     role
    }
  }`,
 }
