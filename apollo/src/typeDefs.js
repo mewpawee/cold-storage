@@ -3,15 +3,20 @@ import { gql } from "apollo-server";
 export default gql`
   scalar Date
 
+  type Company {
+    _id: ID!
+    name: String!
+    groups: [UserGroup]
+    minThreshold: Float
+    maxThreshold: Float
+  }
+
   type User {
     _id: ID!
     username: String!
     company: String!
-    role: String!
-    groups: [UserGroup]
     mapper: [DeviceMapper]
-    minThreshold: Float
-    maxThreshold: Float
+    role: String!
   }
 
   type Token {
@@ -33,19 +38,20 @@ export default gql`
     devices: [Device]
   }
 
-  type Device {
-    _id: ID!
-    deviceId: String!
-    temp: Float!
-  }
-
   type DeviceMapper {
     _id: ID!
     deviceUUID: String!
     deviceId: String!
   }
 
+  type Device {
+    _id: ID!
+    deviceId: String!
+    temp: Float!
+  }
+
   type Query {
+    company: Company!
     user: User!
     login(username: String!, password: String): Token!
     groupData(
@@ -60,7 +66,7 @@ export default gql`
 
   type Mutation {
     createUser(username: String!, password: String!, company: String!): User!
-    changeThreshold(minThreshold: Float, maxThreshold: Float): User!
+    changeThreshold(minThreshold: Float, maxThreshold: Float): Company!
     addUserGroup(username: String!, groupName: String!): UserGroup!
     addGroupData(
       username: String!

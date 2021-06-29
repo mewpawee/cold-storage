@@ -3,29 +3,33 @@ import bcrypt from "bcrypt";
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: { type: String, required: true },
-  role: {type: String, required: true},
-  company: {type: String, required: true},
+const companySchema = new Schema({
+  name: { type: String, required: true },
+  minThreshold: { type: Number },
+  maxThreshold: { type: Number },
   groups: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "userGroup",
     },
   ],
+});
+
+const userSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   mapper: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "deviceMapper",
     },
   ],
-  minThreshold: { type: Number },
-  maxThreshold: { type: Number },
+  password: { type: String, required: true },
+  role: { type: String, required: true },
+  company: { type: String, required: true },
 });
 
 userSchema.pre("save", function () {
@@ -35,8 +39,8 @@ userSchema.pre("save", function () {
 
 const userGroupSchema = new Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    type: String,
+    ref: "company",
     required: true,
   },
   groupName: { type: String, required: true },
@@ -100,4 +104,13 @@ export const DeviceMapper = mongoose.model(
   "deviceMapper"
 );
 
-export default { User, UserGroup, GroupData, Device, DeviceMapper };
+export const Company = mongoose.model("company", companySchema, "company");
+
+export default {
+  User,
+  UserGroup,
+  GroupData,
+  Device,
+  DeviceMapper,
+  Company,
+};

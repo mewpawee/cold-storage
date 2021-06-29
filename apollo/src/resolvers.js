@@ -1,4 +1,5 @@
 import {
+  Company,
   User,
   UserGroup,
   GroupData,
@@ -19,6 +20,14 @@ const getDate = () => {
 
 export default {
   Query: {
+    company: async (parent, _, { me }, info) => {
+      if (!me) {
+        throw new AuthenticationError("You are not authenticated");
+      }
+      const user = await User.findById({ _id: me._id }).exec();
+      let company = await Company.findOne({ name: user.company });
+      return company;
+    },
     user: async (parent, _, { me }, info) => {
       if (!me) {
         throw new AuthenticationError("You are not authenticated");
@@ -60,9 +69,9 @@ export default {
       if (!me) {
         throw new AuthenticationError("You are not authenticated");
       }
-
+      const user = await User.findById({ _id: me._id });
       const userGroup = await UserGroup.findOne({
-        user: me._id,
+        user: user.company,
         groupName: groupName,
       });
 
@@ -95,11 +104,12 @@ export default {
       console.log(startDate, endDate);
       return groupData;
     },
-    deviceMapper: async (parent, { deviceUUID }) => {
-      // if (!me) {
-      //   throw new AuthenticationError("You are not authenticated");
-      // }
+    deviceMapper: async (parent, { deviceUUID }, { me }) => {
+      if (!me) {
+        throw new AuthenticationError("You are not authenticated");
+      }
       const deviceMapper = await DeviceMapper.findOne({
+        user: me._id,
         deviceUUID: deviceUUID,
       }).exec();
 
@@ -109,6 +119,10 @@ export default {
 
   Mutation: {
     createUser: async (parent, { username, password, company }, info) => {
+      const isCompany = await Company.findOne({ name: company });
+      if (!isCompany) {
+        await Company.create({ name: company });
+      }
       const user = await User.create({
         username: username,
         password: password,
@@ -123,12 +137,13 @@ export default {
       { me },
       info
     ) => {
-      if (!me) {
+      if (!me || me.role != "admin") {
         throw new AuthenticationError("You are not authenticated");
       }
-      const result = await User.findOneAndUpdate(
+      const user = await User.findById({ _id: me._id });
+      const result = await Company.findOneAndUpdate(
         {
-          _id: me._id,
+          name: user.company,
         },
         { minThreshold: minThreshold, maxThreshold: maxThreshold },
         { new: true }
@@ -137,7 +152,10 @@ export default {
     },
     addUserGroup: async (parent, { username, groupName }, info) => {
       const user = await User.findOne({ username: username });
-      return await UserGroup.create({ user: user._id, groupName: groupName });
+      return await UserGroup.create({
+        user: user.company,
+        groupName: groupName,
+      });
     },
     addDeviceMapper: async (
       parent,
@@ -166,12 +184,12 @@ export default {
       });
       const user = await User.findOne({ username: username });
       let userGroup = await UserGroup.findOne({
-        user: user._id,
+        user: user.company,
         groupName: groupName,
       });
       if (!userGroup) {
         userGroup = await UserGroup.create({
-          user: user._id,
+          user: user.company,
           groupName: groupName,
         });
       }
@@ -184,6 +202,7 @@ export default {
       });
       for (const device of devices) {
         const deviceMapper = await DeviceMapper.findOne({
+          user: user._id,
           deviceUUID: device.deviceUUID,
         });
         await Device.create({
@@ -196,9 +215,9 @@ export default {
     },
   },
 
-  User: {
-    groups: async ({ _id }, args, _, info) => {
-      const groups = await UserGroup.find({ user: _id }).exec();
+  Company: {
+    groups: async ({ name }, args, _, info) => {
+      const groups = await UserGroup.find({ user: name }).exec();
       return groups;
     },
   },

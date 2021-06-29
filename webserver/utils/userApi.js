@@ -13,11 +13,11 @@ export function createUser(username, password) {
   return request('POST', url, body, false)
 }
 
-export function getUserGroup() {
+export function getCompanyGroup() {
   const url = `/graphql`
   const body = {
     query: `{
-      user{
+      company{
         groups{
           groupName
         }
@@ -87,7 +87,7 @@ export function getUserInfo() {
   const url = `/graphql`
   const body = {
     query: `{
-      user{
+      company{
         groups{
           groupName
           groupData(limit:1){
@@ -131,7 +131,6 @@ export function setThreshold(minimum, maximum) {
       changeThreshold(minThreshold:${minimum},maxThreshold:${maximum}){
         maxThreshold
         minThreshold
-        username
       }
     }`,
   }

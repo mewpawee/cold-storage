@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { getUserGroup } from '@/utils/userApi'
+import { getCompanyGroup } from '@/utils/userApi'
 
 export default {
   data() {
@@ -37,10 +37,16 @@ export default {
     }
   },
   async fetch() {
-    const userGroups = await getUserGroup()
-    this.$store.commit('set_groups', userGroups.data.user.groups)
-    this.$store.commit('settings/setMaximum', userGroups.data.user.maxThreshold)
-    this.$store.commit('settings/setMinimum', userGroups.data.user.minThreshold)
+    const userGroups = await getCompanyGroup()
+    this.$store.commit('set_groups', userGroups.data.company.groups)
+    this.$store.commit(
+      'settings/setMaximum',
+      userGroups.data.company.maxThreshold
+    )
+    this.$store.commit(
+      'settings/setMinimum',
+      userGroups.data.company.minThreshold
+    )
   },
   fetchDelay: 1000,
   fetchOnServer: false,
