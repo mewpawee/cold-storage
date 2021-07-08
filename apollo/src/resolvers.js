@@ -108,8 +108,9 @@ export default {
       if (!me) {
         throw new AuthenticationError("You are not authenticated");
       }
+      const user = await User.findById({ _id: me._id });
       const deviceMapper = await DeviceMapper.findOne({
-        user: me._id,
+        company: user.company,
         deviceUUID: deviceUUID,
       }).exec();
 
@@ -159,16 +160,20 @@ export default {
     },
     addDeviceMapper: async (
       parent,
-      { username, deviceUUID, deviceId },
+      { deviceUUID, deviceId },
+      { me },
       info
     ) => {
-      const user = await User.findOne({ username: username });
+      if (!me || me.role != "admin") {
+        throw new AuthenticationError("You are not an admin");
+      }
+      const user = await User.findById({ _id: me._id });
       const result = await DeviceMapper.findOneAndUpdate(
         {
-          user: user._id,
+          company: user.company,
           deviceId: deviceId,
         },
-        { user: user._id, deviceId: deviceId, deviceUUID: deviceUUID },
+        { company: user.company, deviceId: deviceId, deviceUUID: deviceUUID },
         { upsert: true, new: true }
       );
       return result;
@@ -202,7 +207,7 @@ export default {
       });
       for (const device of devices) {
         const deviceMapper = await DeviceMapper.findOne({
-          user: user._id,
+          company: user.company,
           deviceUUID: device.deviceUUID,
         });
         await Device.create({

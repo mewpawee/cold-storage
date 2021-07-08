@@ -13,6 +13,12 @@ const companySchema = new Schema({
       ref: "userGroup",
     },
   ],
+  mapper: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "deviceMapper",
+    },
+  ],
 });
 
 const userSchema = new Schema({
@@ -21,12 +27,6 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-  mapper: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "deviceMapper",
-    },
-  ],
   password: { type: String, required: true },
   role: { type: String, required: true },
   company: { type: String, required: true },
@@ -77,12 +77,8 @@ const deviceSchema = new Schema({
 });
 
 const deviceMapperSchema = new Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
-  },
-  deviceId: { type: String, require: true, unique: true },
+  company: { type: String, require: true },
+  deviceId: { type: String, require: true },
   deviceUUID: { type: String, required: true },
 });
 

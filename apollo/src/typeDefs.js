@@ -9,13 +9,13 @@ export default gql`
     groups: [UserGroup]
     minThreshold: Float
     maxThreshold: Float
+    mapper: [DeviceMapper]
   }
 
   type User {
     _id: ID!
     username: String!
     company: String!
-    mapper: [DeviceMapper]
     role: String!
   }
 
@@ -76,7 +76,6 @@ export default gql`
       devices: [device]
     ): GroupData
     addDeviceMapper(
-      username: String!
       deviceUUID: String!
       deviceId: String!
     ): DeviceMapper!
