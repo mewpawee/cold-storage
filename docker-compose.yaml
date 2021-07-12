@@ -13,7 +13,7 @@ services:
       - portainer_data:/data
   nginx:
     container_name: nginx
-    restart: unless-stopped
+    restart: always
     build: "./nginx"
     ports:
       - 80:80
@@ -21,7 +21,7 @@ services:
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
   webserver:
     container_name: webserver
-    restart: unless-stopped
+    restart: always
     build: "./webserver"
     environment:
       HOST: localhost
@@ -31,7 +31,7 @@ services:
       - nginx
   apollo:
     container_name: apollo
-    restart: unless-stopped
+    restart: always
     build: "./apollo"
     environment:
       DB_USERNAME: root
