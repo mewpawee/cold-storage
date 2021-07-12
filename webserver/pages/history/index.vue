@@ -40,20 +40,20 @@
         <v-btn @click.stop="handleGenerateCSV">Get CSV</v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="groupInfo.length != 0">
+    <v-row v-if="groupInfo.length != 0 && dates[0] && dates[1]">
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
-        <GoogleMap :key="groupInfo[0].date" :locations="groupInfo" :zoom="10" />
+        <GoogleMap
+          :key="groupInfo[0].date + groupInfo[0].time"
+          :locations="groupInfo"
+          :zoom="10"
+        />
       </v-card>
     </v-row>
-    <v-row v-else>
-      <v-skeleton-loader
-        type="card"
-        class="mx-auto my-12"
-        min-width="344"
-        width="40vw"
-        elevation="2"
-      />
-    </v-row>
+    <div v-else>
+      <v-alert type="info" border="left"
+        >Pick specific valid dates to see the routing.</v-alert
+      >
+    </div>
     <v-data-table
       :key="selectedGroupName"
       :headers="headers"
@@ -62,9 +62,6 @@
       :sort-desc="sort"
       class="elevation-1"
     >
-      <template #[`item.date`]="{ item }">
-        <span>{{ new Date(item.date).toLocaleString() }}</span>
-      </template>
       <template #[`item.temp`]="{ item }">
         <v-chip
           :color="getColor(item.temp, maximumThreshold, minimumThreshold)"
@@ -111,7 +108,9 @@
       width="80vw"
     >
       <PopMap
-        :key="groupInfo.date + groupInfo.deviceId + currentPosition"
+        :key="
+          groupInfo.date + groupInfo.time + groupInfo.deviceId + currentPosition
+        "
         :location="currentPosition"
       />
     </v-dialog>
@@ -138,7 +137,8 @@ export default {
       dialogDelete: false,
       groupInfo: [],
       headers: [
-        { text: 'Date, Time', value: 'date' },
+        { text: 'Date', value: 'date' },
+        { text: 'Time', value: 'time' },
         { text: 'Device ID', value: 'deviceId' },
         { text: 'Temp (°C)', value: 'temp' },
         { text: 'Lat', value: 'lat' },
@@ -213,9 +213,11 @@ export default {
     manipulateData(data) {
       const result = []
       for (const thisData of data) {
+        const dayTime = new Date(thisData.date).toLocaleString().split(',')
         for (const device of thisData.devices) {
           result.push({
-            date: thisData.date,
+            date: dayTime[0],
+            time: dayTime[1],
             lat: thisData.lat,
             lng: thisData.lng,
             deviceId: device.deviceId,
