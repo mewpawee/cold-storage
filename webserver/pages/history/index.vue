@@ -40,6 +40,20 @@
         <v-btn @click.stop="handleGenerateCSV">Get CSV</v-btn>
       </v-col>
     </v-row>
+    <v-row v-if="groupInfo.length != 0">
+      <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
+        <GoogleMap :key="groupInfo[0].date" :locations="groupInfo" :zoom="10" />
+      </v-card>
+    </v-row>
+    <v-row v-else>
+      <v-skeleton-loader
+        type="card"
+        class="mx-auto my-12"
+        min-width="344"
+        width="40vw"
+        elevation="2"
+      />
+    </v-row>
     <v-data-table
       :key="selectedGroupName"
       :headers="headers"
@@ -106,11 +120,13 @@
 
 <script>
 import PopMap from '@/components/Map/PopMap'
+import GoogleMap from '@/components/Map/GoogleMap'
 import { getGroupInfo, getLatestGroupInfo } from '@/utils/userApi'
 import { download } from '@/utils/api'
 export default {
   components: {
     PopMap,
+    GoogleMap,
   },
   data() {
     return {
@@ -150,7 +166,7 @@ export default {
     } else {
       queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
     }
-    console.log(queryGroupInfo)
+    // console.log(queryGroupInfo)
     if (queryGroupInfo.data.groupData) {
       const result = await this.manipulateData(queryGroupInfo.data.groupData)
       this.groupInfo = result
@@ -216,7 +232,7 @@ export default {
     },
     clickMap(item) {
       this.currentPosition = item
-      console.log(this.currentPosition)
+      // console.log(this.currentPosition)
       this.mapClicked = true
     },
   },

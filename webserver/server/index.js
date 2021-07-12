@@ -3,6 +3,8 @@ const consola = require('consola')
 
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ limit: '25mb' }));
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')
