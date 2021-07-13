@@ -15,10 +15,6 @@ module.exports = {
       path: 'graphql',
       handler: '~/api/graphql.js',
     },
-    {
-      path: 'api',
-      handler: '~/api/submission.js',
-    },
   ],
   server: {
     port: process.env.PORT || 3000,

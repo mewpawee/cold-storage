@@ -19,10 +19,20 @@ services:
       - 80:80
     volumes:
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
+  api:
+    container_name: api
+    restart: always
+    build: "./api"
+    environment:
+      PORT: 4000
+      API_URL: http://apollo:4000/graphql
+    depends_on:
+      - apollo
+      - nginx
   webserver:
     container_name: webserver
     restart: unless-stopped
-    build:             
+    build:
       context: "./webserver"
       dockerfile: Dockerfile-dev
       args:
@@ -47,8 +57,6 @@ services:
       DB_PASSWORD: rootpassword
       DB_NAME: USER
       DB_PORT: 27017
-      #ports:
-      #- 4000:4000
     depends_on:
       - database
       - nginx

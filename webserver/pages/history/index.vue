@@ -202,7 +202,7 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         this.$fetch()
-      }, 3000)
+      }, 30000)
     },
     async handleGenerateCSV() {
       await download('/api/generateCSV', this.groupInfo)

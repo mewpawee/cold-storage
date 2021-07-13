@@ -105,7 +105,7 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         this.$fetch()
-      }, 3000)
+      }, 15000)
     },
   },
 }

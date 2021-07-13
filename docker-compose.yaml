@@ -19,8 +19,6 @@ services:
       - 80:80
     volumes:
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    depends_on:
-      - webserver
   webserver:
     container_name: webserver
     restart: always
@@ -28,6 +26,16 @@ services:
     environment:
       HOST: localhost
       PORT: 80
+    depends_on:
+      - apollo
+      - nginx
+  api:
+    container_name: api
+    restart: always
+    build: "./api"
+    environment:
+      PORT: 4000
+      API_URL: http://apollo:4000/graphql
     depends_on:
       - apollo
       - nginx

@@ -1,6 +1,17 @@
 version: "3.8"
 
 services:
+  api:
+    container_name: api
+    restart: always
+    build: "./api"
+    environment:
+      PORT: 4000
+      API_URL: http://apollo:4000/graphql
+    ports:
+      - 8000:4000
+    depends_on:
+      - apollo
   apollo:
     container_name: apollo
     restart: always
