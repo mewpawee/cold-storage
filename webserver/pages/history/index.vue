@@ -205,7 +205,7 @@ export default {
       }, 30000)
     },
     async handleGenerateCSV() {
-      await download('/api/generateCSV', this.groupInfo)
+      await download('/submission/generateCSV', this.groupInfo)
     },
     handlePickedDates() {
       this.$fetch()

@@ -1,4 +1,3 @@
-import { addData } from '../utils/userApi'
 import { json2csvAsync } from 'json-2-csv'
 import express from 'express'
 import cors from 'cors'
