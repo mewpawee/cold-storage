@@ -69,7 +69,8 @@ export default {
       queryGroupInfo.data.groupData &&
       queryGroupInfo.data.groupData.length > 0
     ) {
-      this.groupData = queryGroupInfo.data.groupData
+      const result = await this.manipulateData(queryGroupInfo.data.groupData)
+      this.groupData = result
     } else {
       this.groupData = null
     }
@@ -106,6 +107,13 @@ export default {
       this.polling = setInterval(() => {
         this.$fetch()
       }, 15000)
+    },
+    manipulateData(data) {
+      const array = []
+      const dayTime = new Date(data[0].date).toLocaleString().split(', ')
+      const thisData = { ...data[0], date: dayTime[0], time: dayTime[1] }
+      array.push(thisData)
+      return array
     },
   },
 }

@@ -2,17 +2,16 @@
   <div class="container" style="position: relative; height: 100%">
     <v-btn
       v-for="t in time"
-      small
-      @click="onChangeHour(t)"
       :key="t"
+      small
       :disabled="t == hour"
+      @click="onChangeHour(t)"
       >{{ t }}h</v-btn
     >
-    <line-chart
-      :hour="this.hour"
-      :options="this.options"
-      :chart-data="chartData"
-    />
+    <br />
+    <v-btn small @click="zoom = !zoom">zoom: {{ zoom }}</v-btn>
+    <v-btn small @click="pan = !pan">pan: {{ pan }}</v-btn>
+    <line-chart :hour="hour" :options="options" :chart-data="chartData" />
   </div>
 </template>
 
@@ -38,11 +37,22 @@ export default {
   components: {
     LineChart,
   },
-  props: ['group'],
+  props: { group: { type: String, default: null } },
+  data() {
+    return {
+      zoom: false,
+      pan: false,
+      polling: null,
+      hour: 3,
+      time: [3, 6, 12, 24],
+      chartData: { datasets: [] },
+    }
+  },
   async fetch() {
     const date = dayjs(new Date())
-    const currentTime = date.toDate()
-    const previousTime = date.add(-this.hour, 'hour').toDate()
+    const currentTime = date
+    const previousTime = date.add(-this.hour, 'hour')
+    // console.log(currentTime, previousTime)
     const queryGroupInfo = await getGroupInfo(
       this.group,
       previousTime,
@@ -86,28 +96,6 @@ export default {
       datasets: filtered,
     }
   },
-  data() {
-    return {
-      polling: null,
-      hour: 3,
-      time: [3, 6, 12, 24],
-      chartData: { datasets: [] },
-    }
-  },
-  watch: {
-    group() {
-      this.$fetch()
-    },
-    hour() {
-      this.$fetch()
-    },
-  },
-  beforeDestroy() {
-    clearInterval(this.polling)
-  },
-  created() {
-    this.pollData()
-  },
   computed: {
     maximumThreshold() {
       return this.$nuxt.$store.state.settings.maximumThreshold
@@ -123,11 +111,10 @@ export default {
         annotation: {
           annotations: [
             {
-              // drawTime: 'afterDraw', // overrides annotation.drawTime if set
               type: 'line',
               mode: 'horizontal',
               scaleID: 'y-axis-0',
-              value: `${this.maximumThreshold}`,
+              value: this.maximumThreshold,
               borderColor: 'rgba(255, 0, 0, 0.5)',
               borderWidth: 1,
               borderDash: [10],
@@ -138,11 +125,10 @@ export default {
               },
             },
             {
-              drawTime: 'beforeDatasetsDraw', // overrides annotation.drawTime if set
               type: 'line',
               mode: 'horizontal',
               scaleID: 'y-axis-0',
-              value: `${this.minimumThreshold}`,
+              value: this.minimumThreshold,
               borderColor: 'rgba(65, 105, 225, 0.5)',
               borderWidth: 1,
               borderDash: [10],
@@ -198,17 +184,31 @@ export default {
         plugins: {
           zoom: {
             pan: {
-              enabled: true,
+              enabled: this.pan,
               mode: 'x',
             },
             zoom: {
-              enabled: true,
+              enabled: this.zoom,
               mode: 'x',
             },
           },
         },
       }
     },
+  },
+  watch: {
+    group() {
+      this.$fetch()
+    },
+    hour() {
+      this.$fetch()
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.polling)
+  },
+  created() {
+    this.pollData()
   },
   methods: {
     pollData() {

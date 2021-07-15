@@ -136,6 +136,7 @@ export default {
       mapClicked: false,
       dialogDelete: false,
       groupInfo: [],
+      csvData: [],
       headers: [
         { text: 'Date', value: 'date' },
         { text: 'Time', value: 'time' },
@@ -167,9 +168,10 @@ export default {
       queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
     }
     // console.log(queryGroupInfo)
-    if (queryGroupInfo.data.groupData) {
-      const result = await this.manipulateData(queryGroupInfo.data.groupData)
-      this.groupInfo = result
+    const currentData = queryGroupInfo.data.groupData
+    if (currentData) {
+      this.groupInfo = await this.manipulateData(currentData)
+      this.csvData = await this.csvManipulateData(currentData)
     }
   },
   fetchDelay: 1000,
@@ -205,7 +207,7 @@ export default {
       }, 30000)
     },
     async handleGenerateCSV() {
-      await download('/submission/generateCSV', this.groupInfo)
+      await download('/submission/generateCSV', this.csvData)
     },
     handlePickedDates() {
       this.$fetch()
@@ -218,6 +220,22 @@ export default {
           result.push({
             date: dayTime[0],
             time: dayTime[1],
+            lat: thisData.lat,
+            lng: thisData.lng,
+            deviceId: device.deviceId,
+            temp: device.temp,
+          })
+        }
+      }
+      return result
+    },
+    csvManipulateData(data) {
+      const result = []
+      for (const thisData of data) {
+        const dayTime = new Date(thisData.date).toLocaleString()
+        for (const device of thisData.devices) {
+          result.push({
+            date: dayTime,
             lat: thisData.lat,
             lng: thisData.lng,
             deviceId: device.deviceId,
