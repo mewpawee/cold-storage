@@ -213,7 +213,7 @@ export default {
     manipulateData(data) {
       const result = []
       for (const thisData of data) {
-        const dayTime = new Date(thisData.date).toLocaleString().split(',')
+        const dayTime = new Date(thisData.date).toLocaleString().split(', ')
         for (const device of thisData.devices) {
           result.push({
             date: dayTime[0],
