@@ -42,11 +42,7 @@
     </v-row>
     <v-row v-if="groupInfo.length != 0 && dates[0] && dates[1]">
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
-        <GoogleMap
-          :key="groupInfo[0].date + groupInfo[0].time"
-          :locations="groupInfo"
-          :zoom="10"
-        />
+        <GoogleMap :key="mapInfo[0].date" :locations="mapInfo" :zoom="10" />
       </v-card>
     </v-row>
     <div v-else>
@@ -135,6 +131,7 @@ export default {
       currentPosition: {},
       mapClicked: false,
       dialogDelete: false,
+      mapInfo: [],
       groupInfo: [],
       csvData: [],
       headers: [
@@ -169,9 +166,11 @@ export default {
     }
     // console.log(queryGroupInfo)
     const currentData = queryGroupInfo.data.groupData
+    this.mapInfo = currentData
     if (currentData) {
-      this.groupInfo = await this.manipulateData(currentData)
-      this.csvData = await this.csvManipulateData(currentData)
+      const [group, csv] = await this.manipulateData(currentData)
+      this.groupInfo = group
+      this.csvData = csv
     }
   },
   fetchDelay: 1000,
@@ -214,8 +213,10 @@ export default {
     },
     manipulateData(data) {
       const result = []
+      const csv = []
       for (const thisData of data) {
-        const dayTime = new Date(thisData.date).toLocaleString().split(', ')
+        const dateString = new Date(thisData.date).toLocaleString()
+        const dayTime = dateString.split(', ')
         for (const device of thisData.devices) {
           result.push({
             date: dayTime[0],
@@ -225,17 +226,8 @@ export default {
             deviceId: device.deviceId,
             temp: device.temp,
           })
-        }
-      }
-      return result
-    },
-    csvManipulateData(data) {
-      const result = []
-      for (const thisData of data) {
-        const dayTime = new Date(thisData.date).toLocaleString()
-        for (const device of thisData.devices) {
-          result.push({
-            date: dayTime,
+          csv.push({
+            date: dateString,
             lat: thisData.lat,
             lng: thisData.lng,
             deviceId: device.deviceId,
@@ -243,7 +235,7 @@ export default {
           })
         }
       }
-      return result
+      return [result, csv]
     },
     getColor(temp, maximum, minimum) {
       if (temp > maximum) return 'red'

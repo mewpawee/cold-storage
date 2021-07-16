@@ -21,11 +21,11 @@
         <GMapInfoWindow :options="{ maxWidth: 200 }">
           <p>
             <b>Date:</b>
-            {{ location.date }}
+            {{ new Date(location.date).toLocaleString().split(', ')[0] }}
           </p>
           <p>
             <b>Time:</b>
-            {{ location.time }}
+            {{ new Date(location.date).toLocaleString().split(', ')[1] }}
           </p>
         </GMapInfoWindow>
       </GMapMarker>
