@@ -1,10 +1,12 @@
+import Vue from 'vue'
+
 import { Line, mixins } from 'vue-chartjs'
 import annotationPlugin from 'chartjs-plugin-annotation'
-// import zoomPlugin from 'chartjs-plugin-zoom'
+import zoomPlugin from 'chartjs-plugin-zoom'
 
 const { reactiveProp } = mixins
 
-export default {
+Vue.component('my-line', {
   extends: Line,
   mixins: [reactiveProp],
   props: ['options', 'hour'],
@@ -19,8 +21,7 @@ export default {
     },
   },
   mounted() {
-    // this.addPlugin([annotationPlugin, zoomPlugin])
-    this.addPlugin([annotationPlugin])
+    this.addPlugin([annotationPlugin, zoomPlugin])
     this.renderChart(this.chartData, this.options)
   },
-}
+})

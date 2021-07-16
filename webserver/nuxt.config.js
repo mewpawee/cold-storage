@@ -52,7 +52,9 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [{ src: '~/plugins/myplugin.js', mode: 'client' }],
+  plugins: [
+    // { src: '~/plugins/myplugin.client.js' }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -150,7 +152,12 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {},
+    devMiddleware: {
+      headers: {
+        'Cache-Control': 'no-store',
+        Vary: '*'
+      }
+    }
   },
   publicRuntimeConfig: {
     host: process.env.HOST,

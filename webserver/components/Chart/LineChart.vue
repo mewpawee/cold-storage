@@ -8,10 +8,12 @@
       @click="onChangeHour(t)"
       >{{ t }}h</v-btn
     >
-    <br />
+    <!-- <br />
     <v-btn small @click="zoom = !zoom">zoom: {{ zoom }}</v-btn>
-    <v-btn small @click="pan = !pan">pan: {{ pan }}</v-btn>
-    <line-chart :hour="hour" :options="options" :chart-data="chartData" />
+    <v-btn small @click="pan = !pan">pan: {{ pan }}</v-btn> -->
+
+      <line-chart :hour="hour" :options="options" :chart-data="chartData" />
+
   </div>
 </template>
 
@@ -181,18 +183,18 @@ export default {
             },
           ],
         },
-        plugins: {
-          zoom: {
-            pan: {
-              enabled: this.pan,
-              mode: 'x',
-            },
-            zoom: {
-              enabled: this.zoom,
-              mode: 'x',
-            },
-          },
-        },
+        // plugins: {
+        //   zoom: {
+        //     pan: {
+        //       enabled: this.pan,
+        //       mode: 'x',
+        //     },
+        //     zoom: {
+        //       enabled: this.zoom,
+        //       mode: 'x',
+        //     },
+        //   },
+        // },
       }
     },
   },
