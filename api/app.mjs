@@ -1,19 +1,20 @@
-import { addData } from '../utils/userApi'
-import { json2csvAsync } from 'json-2-csv'
+import { addData } from './util.mjs'
 import express from 'express'
 import cors from 'cors'
 
-const app = require('express')()
+const app = express()
 
 app.use(cors())
 app.use(express.json())
 app.use(
   express.urlencoded({
-    extended: true,
+    extended: true
   })
 )
 
-app.all('/submit', async (req, res) => {
+const port = process.env.PORT || 4000;
+
+app.post('/submit', async (req, res) => {
   try {
     const { username, groupName, lat, lng, devices } = req.body
     const devicesString = JSON.stringify(devices)
@@ -27,14 +28,6 @@ app.all('/submit', async (req, res) => {
   }
 })
 
-app.all('/generateCSV', async (req, res) => {
-  try {
-    const result = await json2csvAsync(req.body)
-    res.attachment('data.csv')
-    res.status(200).send(result)
-  } catch (err) {
-    console.log(err)
-  }
+app.listen(port, () => {
+  console.log(`listen to ${port}`)
 })
-
-export default app

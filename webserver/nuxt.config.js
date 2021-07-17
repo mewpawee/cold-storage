@@ -16,8 +16,8 @@ module.exports = {
       handler: '~/api/graphql.js',
     },
     {
-      path: 'api',
-      handler: '~/api/submission.js',
+      path: 'tools',
+      handler: '~/api/tools.js',
     },
   ],
   server: {

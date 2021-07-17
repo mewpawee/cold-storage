@@ -29,6 +29,16 @@ services:
     depends_on:
       - apollo
       - nginx
+  api:
+    container_name: api
+    restart: always
+    build: "./api"
+    environment:
+      PORT: 4000
+      API_URL: http://apollo:4000/graphql
+    depends_on:
+      - apollo
+      - nginx
   apollo:
     container_name: apollo
     restart: unless-stopped
