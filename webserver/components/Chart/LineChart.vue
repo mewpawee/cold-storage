@@ -9,6 +9,9 @@
       @click="onChangeHour(t)"
       >{{ t }}h</v-btn
     >
+    <br />
+    <v-btn small @click="zoom = !zoom">zoom: {{ zoom }}</v-btn>
+    <v-btn small @click="pan = !pan">pan: {{ pan }}</v-btn>
     <client-only>
       <LineChart :hour="hour" :options="options" :chart-data="chartData" />
     </client-only>
@@ -36,6 +39,8 @@ export default {
   props: { group: { type: Array, default: null } },
   data() {
     return {
+      zoom: false,
+      pan: false,
       polling: null,
       hour: 3,
       time: [3, 6, 12, 24],
@@ -108,7 +113,7 @@ export default {
               type: 'line',
               mode: 'horizontal',
               scaleID: 'y-axis-0',
-              value: `${this.maximumThreshold}`,
+              value: this.maximumThreshold,
               borderColor: 'rgba(255, 0, 0, 0.5)',
               borderWidth: 1,
               borderDash: [10],
@@ -123,7 +128,7 @@ export default {
               type: 'line',
               mode: 'horizontal',
               scaleID: 'y-axis-0',
-              value: `${this.minimumThreshold}`,
+              value: this.minimumThreshold,
               borderColor: 'rgba(65, 105, 225, 0.5)',
               borderWidth: 1,
               borderDash: [10],
@@ -152,13 +157,6 @@ export default {
                 labelString: 'Time',
               },
               type: 'time',
-              // time: {
-              //   unit: 'second',
-              //   unitStepSize: 1,
-              //   displayFormats: {
-              //     second: 'h:m:s',
-              //   },
-              // },
             },
           ],
           yAxes: [
@@ -179,11 +177,11 @@ export default {
         plugins: {
           zoom: {
             pan: {
-              enabled: true,
+              enabled: this.pan,
               mode: 'x',
             },
             zoom: {
-              enabled: true,
+              enabled: this.zoom,
               mode: 'x',
             },
           },
