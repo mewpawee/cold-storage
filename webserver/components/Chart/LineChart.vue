@@ -2,24 +2,22 @@
   <div class="container" style="position: relative; height: 100%">
     <v-btn
       v-for="t in time"
-      small
-      @click="onChangeHour(t)"
       :key="t"
+      small
       :disabled="t == hour"
+      localhost
+      @click="onChangeHour(t)"
       >{{ t }}h</v-btn
     >
-    <line-chart
-      :hour="this.hour"
-      :options="this.options"
-      :chart-data="chartData"
-    />
+    <client-only>
+      <LineChart :hour="hour" :options="options" :chart-data="chartData" />
+    </client-only>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 import { getGroupInfo } from '@/utils/userApi'
-import LineChart from './Chart'
 
 class Dataset {
   constructor(id) {
@@ -35,10 +33,15 @@ class Dataset {
 }
 
 export default {
-  components: {
-    LineChart,
+  props: { group: { type: Array, default: null } },
+  data() {
+    return {
+      polling: null,
+      hour: 3,
+      time: [3, 6, 12, 24],
+      chartData: { datasets: [] },
+    }
   },
-  props: ['group'],
   async fetch() {
     const date = dayjs(new Date())
     const currentTime = date.toDate()
@@ -85,28 +88,6 @@ export default {
       labels: dateList,
       datasets: filtered,
     }
-  },
-  data() {
-    return {
-      polling: null,
-      hour: 3,
-      time: [3, 6, 12, 24],
-      chartData: { datasets: [] },
-    }
-  },
-  watch: {
-    group() {
-      this.$fetch()
-    },
-    hour() {
-      this.$fetch()
-    },
-  },
-  beforeDestroy() {
-    clearInterval(this.polling)
-  },
-  created() {
-    this.pollData()
   },
   computed: {
     maximumThreshold() {
@@ -209,6 +190,20 @@ export default {
         },
       }
     },
+  },
+  watch: {
+    group() {
+      this.$fetch()
+    },
+    hour() {
+      this.$fetch()
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.polling)
+  },
+  created() {
+    this.pollData()
   },
   methods: {
     pollData() {

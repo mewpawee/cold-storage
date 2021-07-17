@@ -64,14 +64,16 @@ export default {
     }
   },
   async fetch() {
-    const queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName, 1)
-    if (
-      queryGroupInfo.data.groupData &&
-      queryGroupInfo.data.groupData.length > 0
-    ) {
-      this.groupData = queryGroupInfo.data.groupData
-    } else {
-      this.groupData = null
+    if (this.selectedGroupName) {
+      const queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName, 1)
+      if (
+        queryGroupInfo.data.groupData &&
+        queryGroupInfo.data.groupData.length > 0
+      ) {
+        this.groupData = queryGroupInfo.data.groupData
+      } else {
+        this.groupData = null
+      }
     }
   },
   computed: {
