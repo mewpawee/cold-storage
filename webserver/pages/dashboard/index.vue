@@ -36,10 +36,7 @@
         <LineChart :group="selectedGroupName" />
       </v-card>
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
-        <GoogleMap
-          :key="(groupData[0].lat, groupData[0].lng)"
-          :location="groupData[0]"
-        />
+        <GoogleMap :locations="groupData" />
       </v-card>
     </div>
   </div>
@@ -107,7 +104,7 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         this.$fetch()
-      }, 3000)
+      }, 15000)
     },
   },
 }

@@ -40,6 +40,16 @@
         <v-btn @click.stop="handleGenerateCSV">Get CSV</v-btn>
       </v-col>
     </v-row>
+    <v-row v-if="groupInfo.length != 0 && dates[0] && dates[1]">
+      <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
+        <GoogleMap :locations="groupInfo" :zoom="10" />
+      </v-card>
+    </v-row>
+    <div v-else>
+      <v-alert type="info" border="left"
+        >Pick specific valid dates to see the routing.</v-alert
+      >
+    </div>
     <v-data-table
       :key="selectedGroupName"
       :headers="headers"
@@ -106,11 +116,13 @@
 
 <script>
 import PopMap from '@/components/Map/PopMap'
+import GoogleMap from '@/components/Map/GoogleMap'
 import { getGroupInfo, getLatestGroupInfo } from '@/utils/userApi'
 import { download } from '@/utils/api'
 export default {
   components: {
     PopMap,
+    GoogleMap,
   },
   data() {
     return {
@@ -150,10 +162,8 @@ export default {
     } else {
       queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
     }
-    console.log(queryGroupInfo)
     if (queryGroupInfo.data.groupData) {
-      const result = await this.manipulateData(queryGroupInfo.data.groupData)
-      this.groupInfo = result
+      this.groupInfo = await this.manipulateData(queryGroupInfo.data.groupData)
     }
   },
   fetchDelay: 1000,
@@ -186,27 +196,54 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         this.$fetch()
-      }, 3000)
+      }, 15000)
     },
     async handleGenerateCSV() {
-      await download('/api/generateCSV', this.groupInfo)
+      const csv = await this.csvData(this.groupInfo)
+      await download('/api/generateCSV', csv)
     },
     handlePickedDates() {
       this.$fetch()
     },
-    manipulateData(data) {
+    async manipulateData(data) {
       const result = []
-      for (const thisData of data) {
-        for (const device of thisData.devices) {
-          result.push({
-            date: thisData.date,
-            lat: thisData.lat,
-            lng: thisData.lng,
-            deviceId: device.deviceId,
-            temp: device.temp,
+      await data.forEach((thisData) => {
+        result.push(
+          ...thisData.devices.map((device) => {
+            return {
+              date: thisData.date,
+              lat: thisData.lat,
+              lng: thisData.lng,
+              deviceId: device.deviceId,
+              temp: device.temp,
+            }
           })
-        }
-      }
+        )
+      })
+      // const result = []
+      // for (const thisData of data) {
+      //   for (const device of thisData.devices) {
+      //     result.push({
+      //       date: thisData.date,
+      //       lat: thisData.lat,
+      //       lng: thisData.lng,
+      //       deviceId: device.deviceId,
+      //       temp: device.temp,
+      //     })
+      //   }
+      // }
+      console.log(result)
+      return result
+    },
+    csvData(data) {
+      const result = data.map((thisData) => {
+        const dateString = new Date(thisData.date).toLocaleString()
+        return { ...thisData, date: dateString }
+      })
+      // for (const thisData of data) {
+      //   const dateString = new Date(thisData.date).toLocaleString()
+      //   result.push({ ...thisData, date: dateString })
+      // }
       return result
     },
     getColor(temp, maximum, minimum) {
@@ -216,7 +253,7 @@ export default {
     },
     clickMap(item) {
       this.currentPosition = item
-      console.log(this.currentPosition)
+      // console.log(this.currentPosition)
       this.mapClicked = true
     },
   },

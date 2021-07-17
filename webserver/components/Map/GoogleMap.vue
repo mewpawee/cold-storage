@@ -1,16 +1,27 @@
 %
 <template>
-  <div v-if="location" :style="style">
+  <div v-if="locations" :style="style">
     <GMap
       language="en"
-      :center="{ lat: location.lat, lng: location.lng }"
+      :center="{ lat: locations[0].lat, lng: locations[0].lng }"
       :options="{ fullscreenControl: false }"
       :zoom="13"
     >
       <GMapMarker
-        :key="location.id"
+        v-for="location in locations"
+        :key="location.date"
         :position="{ lat: location.lat, lng: location.lng }"
       >
+        <!-- <GMapInfoWindow :options="{ maxWidth: 200 }">
+          <p>
+            <b>Date:</b>
+            {{ new Date(location.date).toLocaleString().split(', ')[0] }}
+          </p>
+          <p>
+            <b>Time:</b>
+            {{ new Date(location.date).toLocaleString().split(', ')[1] }}
+          </p>
+        </GMapInfoWindow> -->
       </GMapMarker>
     </GMap>
   </div>
@@ -18,7 +29,10 @@
 
 <script>
 export default {
-  props: ['location'],
+  props: {
+    locations: { type: Array, required: true },
+    zoom: { type: Number, required: false, default: 13 },
+  },
   data() {
     return {
       style: {

@@ -36,7 +36,7 @@ class Dataset {
 }
 
 export default {
-  props: { group: { type: Array, default: null } },
+  props: { group: { type: String, default: null } },
   data() {
     return {
       zoom: false,
@@ -59,11 +59,8 @@ export default {
     // console.log(queryGroupInfo.data.groupData)
     const array = queryGroupInfo.data.groupData
     const dateList = []
-    const datasets = {}
-    const allowed = []
-    for (let i = 1; i < 21; i++) {
-      datasets[i] = new Dataset(i)
-    }
+    const datasets = Array.from({ length: 30 }, (_, i) => new Dataset(i))
+    // const allowed = []
     for (const item of array.reverse()) {
       const timestamp = dayjs(item.date).toDate()
       for (const key in datasets) {
@@ -78,17 +75,9 @@ export default {
       }
       dateList.push(timestamp)
     }
-    for (const key in datasets) {
-      if (datasets[key].data.some((value) => value != null)) {
-        allowed.push(key)
-      }
-    }
-    const filtered = Object.keys(datasets)
-      .filter((key) => allowed.includes(key))
-      .reduce((obj, key) => {
-        obj.push(datasets[key])
-        return obj
-      }, [])
+    const filtered = datasets.filter((obj) => {
+      return obj.data.some((value) => value != null)
+    })
     this.chartData = {
       labels: dateList,
       datasets: filtered,
