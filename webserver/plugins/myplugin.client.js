@@ -1,5 +1,4 @@
 import Vue from 'vue'
-
 import { Line, mixins } from 'vue-chartjs'
 import annotationPlugin from 'chartjs-plugin-annotation'
 import zoomPlugin from 'chartjs-plugin-zoom'

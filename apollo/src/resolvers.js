@@ -62,7 +62,7 @@ export default {
     },
     groupData: async (
       parent,
-      { groupName, startDate, endDate, limit = 5000 },
+      { groupName, startDate, endDate, limit = 100000 },
       { me },
       info
     ) => {
@@ -85,12 +85,8 @@ export default {
         return groupData;
       }
 
-      const start = moment(new Date(startDate), "YYYY-MM-DD")
-        .utcOffset("+0700")
-        .startOf("day");
-      const end = moment(new Date(endDate), "YYYY-MM-DD")
-        .utcOffset("+0700")
-        .endOf("day");
+      const start = moment(new Date(startDate)).utcOffset("+0700")
+      const end = moment(new Date(endDate)).utcOffset("+0700")
       const groupData = await GroupData.find({
         group: userGroup._id,
         date: {

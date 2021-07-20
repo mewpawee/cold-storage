@@ -1,7 +1,22 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="3" sm="3">
+      <v-col cols="4" sm="3">
+        <v-input :messages="minimumThreshold + ' °C'">
+          Minimum Threshold</v-input
+        >
+      </v-col>
+      <v-col cols="4" sm="3">
+        <v-input :messages="maximumThreshold + ' °C'">
+          Maximum Threshold</v-input
+        >
+      </v-col>
+      <v-col cols="4" sm="3">
+        <v-btn @click.stop="handleGenerateCSV">Get CSV</v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="5" sm="3">
         <v-menu
           :close-on-content-click="false"
           :nudge-right="40"
@@ -11,41 +26,63 @@
         >
           <template #activator="{ on, attrs }">
             <v-text-field
-              v-model="dates"
-              label="Pick Start and End Dates"
+              :value="formatDate(startDate)"
+              label="Start Date"
               prepend-icon="mdi-calendar"
               readonly
               v-bind="attrs"
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker
-            v-model="dates"
-            range
-            @change="handlePickedDates"
-          ></v-date-picker>
+          <v-date-picker v-model="startDate"></v-date-picker>
         </v-menu>
       </v-col>
-      <v-col cols="2" sm="2">
-        <v-input :messages="minimumThreshold + ' °C'">
-          Minimum Threshold</v-input
-        >
-      </v-col>
-      <v-col cols="2" sm="2">
-        <v-input :messages="maximumThreshold + ' °C'">
-          Maximum Threshold</v-input
-        >
-      </v-col>
-      <v-col cols="3" sm="3">
-        <v-btn @click.stop="handleGenerateCSV">Get CSV</v-btn>
+      <v-col>
+        <TimeSelect
+          label="Start Time"
+          :value="startTime"
+          @input="handleStartTime"
+        />
       </v-col>
     </v-row>
-    <v-row v-if="groupInfo.length != 0 && dates[0] && dates[1]">
+    <v-row>
+      <v-col cols="5" sm="3">
+        <v-menu
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          offset-y
+          min-width="290px"
+        >
+          <template #activator="{ on, attrs }">
+            <v-text-field
+              :value="formatDate(endDate)"
+              label="End Date"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="endDate"></v-date-picker>
+        </v-menu>
+      </v-col>
+      <v-col>
+        <TimeSelect :value="endTime" label="End Time" @input="handleEndTime" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-btn @click.stop="handleSearch">Search</v-btn>
+      </v-col>
+    </v-row>
+    <v-row v-if="groupInfo.length != 0 && startDateTime && endDateTime">
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
         <GoogleMap :locations="groupInfo" :zoom="10" />
       </v-card>
     </v-row>
     <div v-else>
+      <br />
       <v-alert type="info" border="left"
         >Pick specific valid dates to see the routing.</v-alert
       >
@@ -75,7 +112,7 @@
         <v-btn x-small @click.stop="clickMap(item)"> Map </v-btn>
       </template>
       <template #[`item.status`]="{ item }">
-        <v-col cols="12" sm="6">
+        <v-col cols="12" md="9">
           <v-alert
             v-if="item.temp > maximumThreshold"
             dense
@@ -118,20 +155,33 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import PopMap from '@/components/Map/PopMap'
 import GoogleMap from '@/components/Map/GoogleMap'
+import TimeSelect from '@/components/Time/TimeSelect'
 import { getGroupInfo, getLatestGroupInfo } from '@/utils/userApi'
 import { download } from '@/utils/api'
+
+const customParseFormat = require('dayjs/plugin/customParseFormat')
+
+dayjs.extend(customParseFormat)
+
 export default {
   components: {
     PopMap,
     GoogleMap,
+    TimeSelect,
   },
   data() {
     return {
       sort: true,
       polling: null,
       dates: [],
+      time: null,
+      startDate: null,
+      endDate: null,
+      startTime: null,
+      endTime: null,
       currentPosition: {},
       mapClicked: false,
       dialogDelete: false,
@@ -157,12 +207,13 @@ export default {
   },
   async fetch() {
     let queryGroupInfo
-    if (this.dates[0] && this.dates[1]) {
+    if (this.startDateTime && this.endDateTime) {
       queryGroupInfo = await getGroupInfo(
         this.selectedGroupName,
-        this.dates[0],
-        this.dates[1]
+        this.startDateTime,
+        this.endDateTime
       )
+      console.log(queryGroupInfo)
     } else {
       queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
     }
@@ -173,6 +224,24 @@ export default {
   fetchDelay: 1000,
   fetchOnServer: false,
   computed: {
+    startDateTime() {
+      if (!this.startDate | !this.startTime) return null
+      else {
+        return dayjs(
+          `${this.startDate} ${this.startTime}`,
+          'YYYY-MM-DD H:mm A'
+        ).toDate()
+      }
+    },
+    endDateTime() {
+      if (!this.endDate | !this.endTime) return null
+      else {
+        return dayjs(
+          `${this.endDate} ${this.endTime}`,
+          'YYYY-MM-DD H:mm A'
+        ).toDate()
+      }
+    },
     selectedGroupName: {
       get() {
         return this.$nuxt.$store.state.selectedGroupName
@@ -200,7 +269,7 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         this.$fetch()
-      }, 15000)
+      }, 3000)
     },
     async handleGenerateCSV() {
       // const csv = await this.csvData(this.groupInfo)
@@ -246,6 +315,22 @@ export default {
       this.currentPosition = item
       // console.log(this.currentPosition)
       this.mapClicked = true
+    },
+    handleStartTime(value) {
+      this.startTime = value
+    },
+    handleEndTime(value) {
+      this.endTime = value
+    },
+    handleSearch() {
+      clearInterval(this.polling)
+      this.$fetch()
+    },
+    formatDate(date) {
+      if (!date) return null
+
+      const [year, month, day] = date.split('-')
+      return `${month}/${day}/${year}`
     },
   },
 }
