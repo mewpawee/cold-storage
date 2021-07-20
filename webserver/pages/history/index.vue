@@ -59,7 +59,10 @@
       class="elevation-1"
     >
       <template #[`item.date`]="{ item }">
-        <span>{{ new Date(item.date).toLocaleString() }}</span>
+        {{ new Date(item.date).toLocaleString().split(', ')[0] }}
+      </template>
+      <template #[`item.time`]="{ item }">
+        {{ new Date(item.date).toLocaleString().split(', ')[1] }}
       </template>
       <template #[`item.temp`]="{ item }">
         <v-chip
@@ -134,7 +137,8 @@ export default {
       dialogDelete: false,
       groupInfo: [],
       headers: [
-        { text: 'Date, Time', value: 'date' },
+        { text: 'Date', value: 'date' },
+        { text: 'Time', value: 'time' },
         { text: 'Device ID', value: 'deviceId' },
         { text: 'Temp (°C)', value: 'temp' },
         { text: 'Lat', value: 'lat' },
@@ -199,8 +203,8 @@ export default {
       }, 15000)
     },
     async handleGenerateCSV() {
-      const csv = await this.csvData(this.groupInfo)
-      await download('/tools/generateCSV', csv)
+      // const csv = await this.csvData(this.groupInfo)
+      await download('/tools/generateCSV', this.groupInfo)
     },
     handlePickedDates() {
       this.$fetch()
@@ -220,19 +224,6 @@ export default {
           })
         )
       })
-      // const result = []
-      // for (const thisData of data) {
-      //   for (const device of thisData.devices) {
-      //     result.push({
-      //       date: thisData.date,
-      //       lat: thisData.lat,
-      //       lng: thisData.lng,
-      //       deviceId: device.deviceId,
-      //       temp: device.temp,
-      //     })
-      //   }
-      // }
-      // console.log(result)
       return result
     },
     csvData(data) {
