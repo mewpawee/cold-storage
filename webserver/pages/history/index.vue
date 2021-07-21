@@ -76,7 +76,7 @@
         <v-btn @click.stop="handleSearch">Search</v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="groupInfo.length != 0 && startDateTime && endDateTime">
+    <v-row v-if="groupInfo.length != 0 && search">
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
         <GoogleMap :locations="groupInfo" :zoom="10" />
       </v-card>
@@ -175,6 +175,7 @@ export default {
   data() {
     return {
       sort: true,
+      search: false,
       polling: null,
       dates: [],
       time: null,
@@ -207,7 +208,7 @@ export default {
   },
   async fetch() {
     let queryGroupInfo
-    if (this.startDateTime && this.endDateTime) {
+    if (this.startDateTime && this.endDateTime && this.search) {
       queryGroupInfo = await getGroupInfo(
         this.selectedGroupName,
         this.startDateTime,
@@ -272,8 +273,8 @@ export default {
       }, 3000)
     },
     async handleGenerateCSV() {
-      // const csv = await this.csvData(this.groupInfo)
-      await download('/tools/generateCSV', this.groupInfo)
+      const csv = await this.csvData(this.groupInfo)
+      await download('/tools/generateCSV', csv)
     },
     handlePickedDates() {
       this.$fetch()
@@ -297,13 +298,11 @@ export default {
     },
     csvData(data) {
       const result = data.map((thisData) => {
-        const dateString = new Date(thisData.date).toLocaleString()
+        const dateString = dayjs('2021-07-12T17:59:29+07:00').format(
+          'DD/MM/YYYY h:mm:ss A'
+        )
         return { ...thisData, date: dateString }
       })
-      // for (const thisData of data) {
-      //   const dateString = new Date(thisData.date).toLocaleString()
-      //   result.push({ ...thisData, date: dateString })
-      // }
       return result
     },
     getColor(temp, maximum, minimum) {
@@ -324,6 +323,7 @@ export default {
     },
     handleSearch() {
       clearInterval(this.polling)
+      this.search = true
       this.$fetch()
     },
     formatDate(date) {
