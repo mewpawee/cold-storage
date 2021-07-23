@@ -12,7 +12,7 @@
         >
       </v-col>
       <v-col cols="4" sm="3">
-        <v-btn @click.stop="handleGenerateCSV">Get CSV</v-btn>
+        <v-btn :disabled="!csv" @click.stop="handleGenerateCSV">Get CSV</v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -73,7 +73,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-btn @click.stop="handleSearch">Search</v-btn>
+        <v-btn :disabled="!search" @click.stop="handleSearch">Search</v-btn>
       </v-col>
     </v-row>
     <v-row v-if="groupInfo.length != 0 && search">
@@ -172,8 +172,8 @@ export default {
   },
   data() {
     return {
+      csv: false,
       sort: true,
-      search: false,
       polling: null,
       dates: [],
       time: null,
@@ -205,19 +205,17 @@ export default {
     }
   },
   async fetch() {
-    let queryGroupInfo
-    if (this.startDateTime && this.endDateTime && this.search) {
-      queryGroupInfo = await getGroupInfo(
-        this.selectedGroupName,
-        this.startDateTime,
-        this.endDateTime
-      )
-      if (queryGroupInfo.data.groupData) {
-        this.groupInfo = await this.manipulateData(
-          queryGroupInfo.data.groupData
-        )
-      }
+    this.csv = false
+    const queryGroupInfo = await getGroupInfo(
+      this.selectedGroupName,
+      this.startDateTime,
+      this.endDateTime
+    )
+    if (queryGroupInfo.data.groupData) {
+      this.groupInfo = await this.manipulateData(queryGroupInfo.data.groupData)
+      this.csv = true
     }
+
     // else {
     //   queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
     // }
@@ -225,8 +223,12 @@ export default {
   fetchDelay: 1000,
   fetchOnServer: false,
   computed: {
+    search() {
+      if (this.startDateTime && this.endDateTime) return true
+      else return false
+    },
     startDateTime() {
-      if (!this.startDate | !this.startTime) return null
+      if (!this.startDate || !this.startTime) return null
       else {
         return dayjs(
           `${this.startDate} ${this.startTime}`,
@@ -235,7 +237,7 @@ export default {
       }
     },
     endDateTime() {
-      if (!this.endDate | !this.endTime) return null
+      if (!this.endDate || !this.endTime) return null
       else {
         return dayjs(
           `${this.endDate} ${this.endTime}`,
@@ -298,7 +300,7 @@ export default {
     },
     csvData(data) {
       const result = data.map((thisData) => {
-        const dateString = dayjs(thisData.date).format('MM/DD/YYYY hh:mm A')
+        const dateString = dayjs(thisData.date).format()
         return { ...thisData, date: dateString }
       })
       return result
@@ -321,7 +323,6 @@ export default {
     },
     handleSearch() {
       clearInterval(this.polling)
-      this.search = true
       this.$fetch()
     },
     formatDate(date) {
