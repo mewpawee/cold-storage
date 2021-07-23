@@ -298,9 +298,7 @@ export default {
     },
     csvData(data) {
       const result = data.map((thisData) => {
-        const dateString = dayjs('2021-07-12T17:59:29+07:00').format(
-          'DD/MM/YYYY h:mm:ss A'
-        )
+        const dateString = dayjs(thisData.date).format('DD/MM/YYYY h:mm:ss A')
         return { ...thisData, date: dateString }
       })
       return result
