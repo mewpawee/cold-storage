@@ -83,9 +83,7 @@
     </v-row>
     <div v-else>
       <br />
-      <v-alert type="info" border="left"
-        >Pick specific valid dates to see the routing.</v-alert
-      >
+      <v-alert type="info" border="left">Pick group, date, time.</v-alert>
     </div>
     <v-data-table
       :key="selectedGroupName"
@@ -159,7 +157,7 @@ import dayjs from 'dayjs'
 import PopMap from '@/components/Map/PopMap'
 import GoogleMap from '@/components/Map/GoogleMap'
 import TimeSelect from '@/components/Time/TimeSelect'
-import { getGroupInfo, getLatestGroupInfo } from '@/utils/userApi'
+import { getGroupInfo } from '@/utils/userApi'
 import { download } from '@/utils/api'
 
 const customParseFormat = require('dayjs/plugin/customParseFormat')
@@ -214,13 +212,15 @@ export default {
         this.startDateTime,
         this.endDateTime
       )
-      console.log(queryGroupInfo)
-    } else {
-      queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
+      if (queryGroupInfo.data.groupData) {
+        this.groupInfo = await this.manipulateData(
+          queryGroupInfo.data.groupData
+        )
+      }
     }
-    if (queryGroupInfo.data.groupData) {
-      this.groupInfo = await this.manipulateData(queryGroupInfo.data.groupData)
-    }
+    // else {
+    //   queryGroupInfo = await getLatestGroupInfo(this.selectedGroupName)
+    // }
   },
   fetchDelay: 1000,
   fetchOnServer: false,
@@ -255,30 +255,30 @@ export default {
       return this.$nuxt.$store.state.settings.minimumThreshold
     },
   },
-  watch: {
-    selectedGroupName() {
-      this.$fetch()
-    },
-  },
-  beforeDestroy() {
-    clearInterval(this.polling)
-  },
-  created() {
-    this.pollData()
-  },
+  // watch: {
+  //   selectedGroupName() {
+  //     this.$fetch()
+  //   },
+  // },
+  // beforeDestroy() {
+  //   clearInterval(this.polling)
+  // },
+  // created() {
+  //   this.pollData()
+  // },
   methods: {
-    pollData() {
-      this.polling = setInterval(() => {
-        this.$fetch()
-      }, 3000)
-    },
+    // pollData() {
+    //   this.polling = setInterval(() => {
+    //     this.$fetch()
+    //   }, 3000)
+    // },
     async handleGenerateCSV() {
       const csv = await this.csvData(this.groupInfo)
       await download('/tools/generateCSV', csv)
     },
-    handlePickedDates() {
-      this.$fetch()
-    },
+    // handlePickedDates() {
+    //   this.$fetch()
+    // },
     async manipulateData(data) {
       const result = []
       await data.forEach((thisData) => {
@@ -298,7 +298,7 @@ export default {
     },
     csvData(data) {
       const result = data.map((thisData) => {
-        const dateString = dayjs(thisData.date).format('DD/MM/YYYY h:mm:ss A')
+        const dateString = dayjs(thisData.date).format('MM/DD/YYYY hh:mm A')
         return { ...thisData, date: dateString }
       })
       return result
@@ -326,7 +326,6 @@ export default {
     },
     formatDate(date) {
       if (!date) return null
-
       const [year, month, day] = date.split('-')
       return `${month}/${day}/${year}`
     },
