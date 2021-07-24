@@ -78,7 +78,7 @@
     </v-row>
     <v-row v-if="groupInfo.length != 0 && search">
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
-        <GoogleMap :locations="groupInfo" :zoom="10" />
+        <RouteMap :locations="groupInfo" />
       </v-card>
     </v-row>
     <div v-else>
@@ -94,10 +94,10 @@
       class="elevation-1"
     >
       <template #[`item.date`]="{ item }">
-        {{ new Date(item.date).toLocaleString().split(', ')[0] }}
+        {{ item.dateString.split(', ')[0] }}
       </template>
       <template #[`item.time`]="{ item }">
-        {{ new Date(item.date).toLocaleString().split(', ')[1] }}
+        {{ item.dateString.split(', ')[1] }}
       </template>
       <template #[`item.temp`]="{ item }">
         <v-chip
@@ -144,10 +144,7 @@
       transition="dialog-bottom-transition"
       width="80vw"
     >
-      <PopMap
-        :key="groupInfo.date + groupInfo.deviceId + currentPosition"
-        :location="currentPosition"
-      />
+      <PopMap :key="currentPosition" :location="currentPosition" />
     </v-dialog>
   </div>
 </template>
@@ -155,7 +152,7 @@
 <script>
 import dayjs from 'dayjs'
 import PopMap from '@/components/Map/PopMap'
-import GoogleMap from '@/components/Map/GoogleMap'
+import RouteMap from '@/components/Map/RouteMap'
 import TimeSelect from '@/components/Time/TimeSelect'
 import { getGroupInfo } from '@/utils/userApi'
 import { download } from '@/utils/api'
@@ -167,7 +164,7 @@ dayjs.extend(customParseFormat)
 export default {
   components: {
     PopMap,
-    GoogleMap,
+    RouteMap,
     TimeSelect,
   },
   data() {
@@ -257,30 +254,11 @@ export default {
       return this.$nuxt.$store.state.settings.minimumThreshold
     },
   },
-  // watch: {
-  //   selectedGroupName() {
-  //     this.$fetch()
-  //   },
-  // },
-  // beforeDestroy() {
-  //   clearInterval(this.polling)
-  // },
-  // created() {
-  //   this.pollData()
-  // },
   methods: {
-    // pollData() {
-    //   this.polling = setInterval(() => {
-    //     this.$fetch()
-    //   }, 3000)
-    // },
     async handleGenerateCSV() {
       const csv = await this.csvData(this.groupInfo)
       await download('/tools/generateCSV', csv)
     },
-    // handlePickedDates() {
-    //   this.$fetch()
-    // },
     async manipulateData(data) {
       const result = []
       await data.forEach((thisData) => {
@@ -288,6 +266,7 @@ export default {
           ...thisData.devices.map((device) => {
             return {
               date: thisData.date,
+              dateString: thisData.dateString,
               lat: thisData.lat,
               lng: thisData.lng,
               deviceId: device.deviceId,
@@ -312,7 +291,6 @@ export default {
     },
     clickMap(item) {
       this.currentPosition = item
-      // console.log(this.currentPosition)
       this.mapClicked = true
     },
     handleStartTime(value) {

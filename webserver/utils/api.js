@@ -53,3 +53,22 @@ export async function download(url, data) {
     return e
   }
 }
+
+export async function snappedRoadAPI(data) {
+  try {
+    // call api
+    const params = {
+      interpolate: true,
+      key: process.env.GOOGLEAPI,
+      path: data.join('|'),
+    }
+
+    const response = await axios.get(
+      'https://roads.googleapis.com/v1/snapToRoads',
+      { params }
+    )
+    return response
+  } catch (e) {
+    return e
+  }
+}

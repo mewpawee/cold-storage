@@ -73,7 +73,7 @@ module.exports = {
     [
       'nuxt-gmaps',
       {
-        key: '<GOOGLEMAP_API_KEY>',
+        key: process.env.GOOGLEAPI,
       },
     ],
   ],
@@ -154,5 +154,6 @@ module.exports = {
   },
   publicRuntimeConfig: {
     host: process.env.HOST,
+    googleAPI: process.env.GOOGLEAPI
   },
 }

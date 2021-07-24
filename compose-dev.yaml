@@ -30,6 +30,7 @@ services:
     environment:
       HOST: localhost
       PORT: 80
+      GOOGLEAPI: "<GOOGLEMAP_API_KEY>"
     depends_on:
       - apollo
       - nginx

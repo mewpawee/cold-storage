@@ -9,14 +9,8 @@
       <GMapMarker
         :key="location.id"
         :position="{ lat: location.lat, lng: location.lng }"
-      >
-        <GMapInfoWindow :options="{ maxWidth: 200 }">
-          <code>
-            Device ID: {{ location.deviceId }}lat: {{ location.lat }}, lng:
-            {{ location.lng }}
-          </code>
-        </GMapInfoWindow>
-      </GMapMarker>
+        :options="{ clickable: false }"
+      />
     </GMap>
   </div>
 </template>

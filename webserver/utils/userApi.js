@@ -53,6 +53,7 @@ export function getGroupInfo(groupName, startDate, endDate) {
     query: `{
       groupData(groupName:"${groupName}", startDate: "${startDate}", endDate: "${endDate}"){
         date
+        dateString
         lat
         lng
         devices{
