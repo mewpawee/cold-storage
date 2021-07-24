@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div ref="map" class="GMap__Wrapper"></div>
+  <div class="map_wrapper">
+    <div ref="map" class="map"></div>
   </div>
 </template>
 
@@ -16,13 +16,13 @@ export default {
       google: null,
     }
   },
-  watch: {
-    location() {
-      this.google.maps.event.trigger(this.map, 'idle')
-      this.initMap()
-      this.addMarker()
-    },
-  },
+  // watch: {
+  //   location() {
+  //     this.google.maps.event.trigger(this.map, 'idle')
+  //     this.initMap()
+  //     this.addMarker()
+  //   },
+  // },
   async mounted() {
     await this.load()
     this.initMap()
@@ -54,8 +54,12 @@ export default {
 }
 </script>
 <style lang="scss">
-.GMap__Wrapper {
-  width: 100%;
-  // position: 'relative';
+.map_wrapper {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  .map {
+    height: 100%;
+  }
 }
 </style>

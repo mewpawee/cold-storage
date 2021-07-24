@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div ref="map" class="GMap__Wrapper"></div>
+  <div class="map_wrapper">
+    <div ref="map" class="map"></div>
   </div>
 </template>
 
@@ -34,7 +34,7 @@ export default {
     initMap() {
       this.map = new this.google.maps.Map(this.$refs.map, {
         center: this.locations[0],
-        zoom: 6,
+        zoom: 7,
       })
     },
     addMarker() {
@@ -84,8 +84,12 @@ export default {
 }
 </script>
 <style lang="scss">
-.GMap__Wrapper {
-  width: 100%;
-  // position: 'relative';
+.map_wrapper {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  .map {
+    height: 100%;
+  }
 }
 </style>

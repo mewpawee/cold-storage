@@ -35,8 +35,17 @@
       <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
         <LineChart :group="selectedGroupName" />
       </v-card>
-      <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
-        <Map :location="{ lat: groupData[0].lat, lng: groupData[0].lng }" />
+      <v-card
+        class="mx-auto my-5"
+        min-height="400"
+        min-width="344"
+        width="55vw"
+        elevation="2"
+      >
+        <Map
+          :key="groupData[0].date"
+          :location="{ lat: groupData[0].lat, lng: groupData[0].lng }"
+        />
       </v-card>
     </div>
   </div>

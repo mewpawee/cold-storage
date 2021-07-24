@@ -77,7 +77,13 @@
       </v-col>
     </v-row>
     <v-row v-if="groupInfo.length != 0 && search">
-      <v-card class="mx-auto my-5" min-width="344" width="55vw" elevation="2">
+      <v-card
+        class="mx-auto my-5"
+        min-height="400"
+        min-width="344"
+        width="55vw"
+        elevation="2"
+      >
         <RouteMap :locations="groupInfo" />
       </v-card>
     </v-row>
@@ -144,15 +150,20 @@
       transition="dialog-bottom-transition"
       width="80vw"
     >
-      <PopMap :key="currentPosition" :location="currentPosition" />
+      <v-card height="60vh">
+        <Map
+          :key="currentPosition[0] + currentPosition[1]"
+          :location="currentPosition"
+        />
+      </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
-import PopMap from '@/components/Map/PopMap'
 import RouteMap from '@/components/Map/RouteMap'
+import Map from '@/components/Map/Map'
 import TimeSelect from '@/components/Time/TimeSelect'
 import { getGroupInfo } from '@/utils/userApi'
 import { download } from '@/utils/api'
@@ -163,7 +174,7 @@ dayjs.extend(customParseFormat)
 
 export default {
   components: {
-    PopMap,
+    Map,
     RouteMap,
     TimeSelect,
   },

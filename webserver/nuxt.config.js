@@ -69,13 +69,13 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/auth',
     '@nuxtjs/apollo',
-    'nuxt-leaflet',
-    [
-      'nuxt-gmaps',
-      {
-        key: "<GOOGLEMAP_API_KEY>",
-      },
-    ],
+    // 'nuxt-leaflet',
+    // [
+    //   'nuxt-gmaps',
+    //   {
+    //     key: "<GOOGLEMAP_API_KEY>",
+    //   },
+    // ],
   ],
   router: {
     middleware: ['auth'],
