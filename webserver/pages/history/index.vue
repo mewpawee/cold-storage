@@ -153,25 +153,7 @@ export default {
       endDate: null,
       startTime: null,
       endTime: null,
-      dialogDelete: false,
       groupInfo: [],
-      headers: [
-        { text: 'Date', value: 'date' },
-        { text: 'Time', value: 'time' },
-        { text: 'Device ID', value: 'deviceId' },
-        { text: 'Temp (°C)', value: 'temp' },
-        { text: 'Lat', value: 'lat' },
-        { text: 'Lng', value: 'lng' },
-        { text: 'Map', value: 'map' },
-        { text: 'Status', value: 'status' },
-      ],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-      },
-      defaultItem: {
-        name: '',
-      },
     }
   },
   async fetch() {
@@ -194,7 +176,8 @@ export default {
   fetchOnServer: false,
   computed: {
     search() {
-      if (this.startDateTime && this.endDateTime) return true
+      if (this.startDateTime && this.endDateTime && this.selectedGroupName)
+        return true
       else return false
     },
     startDateTime() {
