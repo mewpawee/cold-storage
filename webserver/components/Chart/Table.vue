@@ -4,10 +4,79 @@
       :headers="headers"
       :items="data"
       sort-by="date"
-      sort-desc="true"
+      :sort-desc="sort"
       class="elevation-1"
     >
-      <template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
+      <template v-slot:top>
+        <v-menu
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+          transition="slide-y-transition"
+          right
+          fixed
+          style="position: absolute; left: 0"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on">
+              <v-icon
+                small
+                left
+                :color="
+                  activeFilters.deviceId &&
+                  activeFilters.deviceId.length < filters.deviceId.length
+                    ? 'red'
+                    : 'primary'
+                "
+              >
+                mdi-filter-variant
+              </v-icon>
+              Filter Device ID
+            </v-btn>
+          </template>
+          <v-list flat dense class="pa-0">
+            <v-list-item-group
+              multiple
+              v-model="activeFilters.deviceId"
+              class="py-2"
+            >
+              <template v-for="item in filters.deviceId">
+                <v-list-item :key="`${item}`" :value="item" :ripple="false">
+                  <template v-slot:default="{ active, toggle }">
+                    <v-list-item-action>
+                      <v-checkbox
+                        :input-value="active"
+                        :true-value="item"
+                        @click="toggle"
+                        color="primary"
+                        :ripple="false"
+                        dense
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="item"></v-list-item-title>
+                    </v-list-item-content>
+                  </template>
+                </v-list-item>
+              </template>
+            </v-list-item-group>
+            <v-divider></v-divider>
+            <v-row no-gutters>
+              <v-col cols="6">
+                <v-btn text block @click="toggleAll('deviceId')" color="info"
+                  >Toggle all</v-btn
+                >
+              </v-col>
+              <v-col cols="6">
+                <v-btn text block @click="clearAll('deviceId')" color="error"
+                  >Clear all</v-btn
+                >
+              </v-col>
+            </v-row>
+          </v-list>
+        </v-menu>
+      </template>
+      <!-- <template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
         <div :key="i" style="display: inline-block; padding: 16px 0">
           {{ header.text }}
         </div>
@@ -87,7 +156,7 @@
             </v-list>
           </v-menu>
         </div>
-      </template>
+      </template> -->
 
       <template #[`item.date`]="{ item }">
         {{ item.dateString.split(', ')[0] }}
@@ -186,6 +255,7 @@ export default {
           sortable: false,
         },
       ],
+      sort: true,
       filters: { deviceId: [] },
       activeFilters: {},
       mapClicked: false,
@@ -216,7 +286,7 @@ export default {
           })
       }
       this.activeFilters = Object.assign({}, this.filters)
-      console.log(this.activeFilters)
+      // console.log(this.activeFilters)
     },
     toggleAll(col) {
       this.activeFilters[col] = this.data

@@ -73,7 +73,9 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-btn :disabled="!search" @click.stop="handleSearch">Search</v-btn>
+        <v-btn color="primary" :disabled="!search" @click.stop="handleSearch"
+          >Search</v-btn
+        >
       </v-col>
     </v-row>
     <div v-if="groupInfo.length == 0 && !search">
