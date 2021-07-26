@@ -4,7 +4,7 @@
       :headers="headers"
       :items="data"
       sort-by="date"
-      :sort-desc="true"
+      sort-desc="true"
       class="elevation-1"
     >
       <template v-for="(col, i) in filters" v-slot:[`header.${i}`]="{ header }">
@@ -234,3 +234,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.v-list-item--link:hover {
+  background-color: rgba(0, 0, 0, 0.13);
+}
+</style>
