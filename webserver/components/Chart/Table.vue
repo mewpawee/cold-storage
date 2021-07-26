@@ -70,13 +70,13 @@
 <script>
 import Map from '@/components/Map/Map'
 export default {
+  components: {
+    Map,
+  },
   props: {
     data: { type: Array, required: true, default: null },
     minimumThreshold: { type: Number, required: true, default: null },
     maximumThreshold: { type: Number, required: true, default: null },
-  },
-  components: {
-    Map,
   },
   data() {
     return {

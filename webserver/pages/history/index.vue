@@ -114,8 +114,8 @@
             <Table
               :key="selectedGroupName"
               :data="groupInfo"
-              :minimumThreshold="minimumThreshold"
-              :maximumThreshold="maximumThreshold"
+              :minimum-threshold="minimumThreshold"
+              :maximum-threshold="maximumThreshold"
             />
           </v-col>
         </v-row>
