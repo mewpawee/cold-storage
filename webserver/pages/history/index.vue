@@ -76,94 +76,58 @@
         <v-btn :disabled="!search" @click.stop="handleSearch">Search</v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="groupInfo.length != 0 && search">
-      <v-card
-        class="mx-auto my-5"
-        min-height="400"
-        min-width="344"
-        width="55vw"
-        elevation="2"
-      >
-        <RouteMap :locations="groupInfo" />
-      </v-card>
-    </v-row>
-    <div v-else>
+    <div v-if="groupInfo.length == 0 && !search">
       <br />
       <v-alert type="info" border="left">Pick group, date, time.</v-alert>
     </div>
-    <v-data-table
-      :key="selectedGroupName"
-      :headers="headers"
-      :items="groupInfo"
-      sort-by="date"
-      :sort-desc="sort"
-      class="elevation-1"
-    >
-      <template #[`item.date`]="{ item }">
-        {{ item.dateString.split(', ')[0] }}
-      </template>
-      <template #[`item.time`]="{ item }">
-        {{ item.dateString.split(', ')[1] }}
-      </template>
-      <template #[`item.temp`]="{ item }">
-        <v-chip
-          :color="getColor(item.temp, maximumThreshold, minimumThreshold)"
-          dark
-          >{{ item.temp }}
-        </v-chip>
-      </template>
-      <template #[`item.map`]="{ item }">
-        <v-btn x-small @click.stop="clickMap(item)"> Map </v-btn>
-      </template>
-      <template #[`item.status`]="{ item }">
-        <v-col cols="12" md="9">
-          <v-alert
-            v-if="item.temp > maximumThreshold"
-            dense
-            type="error"
-            elevation="3"
-            >Temp Too High</v-alert
+    <div v-if="$fetchState.pending">
+      <v-skeleton-loader
+        type="card"
+        class="mx-auto my-12"
+        min-width="344"
+        width="40vw"
+        elevation="2"
+      />
+      <v-skeleton-loader
+        type="table"
+        class="mx-auto my-12"
+        min-width="344"
+        width="60vw"
+        elevation="2"
+      />
+    </div>
+    <div v-else>
+      <div v-if="groupInfo.length != 0 && search">
+        <v-row>
+          <v-card
+            class="mx-auto my-5"
+            min-height="400"
+            min-width="344"
+            width="55vw"
+            elevation="2"
           >
-          <v-alert
-            v-else-if="item.temp < minimumThreshold"
-            dense
-            type="error"
-            color="blue"
-            elevation="3"
-            >Temp Too Low</v-alert
-          >
-          <v-alert
-            v-else-if="
-              item.temp > minimumThreshold && item.temp <= maximumThreshold
-            "
-            dense
-            type="success"
-            elevation="3"
-            >Normal</v-alert
-          >
-        </v-col>
-      </template>
-    </v-data-table>
-    <v-dialog
-      v-if="groupInfo"
-      v-model="mapClicked"
-      transition="dialog-bottom-transition"
-      width="80vw"
-    >
-      <v-card height="60vh">
-        <Map
-          :key="currentPosition[0] + currentPosition[1]"
-          :location="currentPosition"
-        />
-      </v-card>
-    </v-dialog>
+            <RouteMap :locations="groupInfo" />
+          </v-card>
+        </v-row>
+        <v-row>
+          <v-col>
+            <Table
+              :key="selectedGroupName"
+              :data="groupInfo"
+              :minimumThreshold="minimumThreshold"
+              :maximumThreshold="maximumThreshold"
+            />
+          </v-col>
+        </v-row>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 import RouteMap from '@/components/Map/RouteMap'
-import Map from '@/components/Map/Map'
+import Table from '@/components/Chart/Table'
 import TimeSelect from '@/components/Time/TimeSelect'
 import { getGroupInfo } from '@/utils/userApi'
 import { download } from '@/utils/api'
@@ -174,7 +138,7 @@ dayjs.extend(customParseFormat)
 
 export default {
   components: {
-    Map,
+    Table,
     RouteMap,
     TimeSelect,
   },
@@ -189,8 +153,6 @@ export default {
       endDate: null,
       startTime: null,
       endTime: null,
-      currentPosition: {},
-      mapClicked: false,
       dialogDelete: false,
       groupInfo: [],
       headers: [
@@ -299,10 +261,6 @@ export default {
       if (temp > maximum) return 'red'
       else if (temp < minimum) return 'blue'
       else return 'green'
-    },
-    clickMap(item) {
-      this.currentPosition = item
-      this.mapClicked = true
     },
     handleStartTime(value) {
       this.startTime = value

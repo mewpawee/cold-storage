@@ -9,14 +9,21 @@
           type="card"
           class="mx-auto my-12"
           min-width="344"
-          width="40vw"
+          width="60vw"
           elevation="2"
         />
         <v-skeleton-loader
           type="card"
           class="mx-auto my-12"
           min-width="344"
-          width="40vw"
+          width="60vw"
+          elevation="2"
+        />
+        <v-skeleton-loader
+          type="card"
+          class="mx-auto my-12"
+          min-width="344"
+          width="60vw"
           elevation="2"
         />
       </div>
