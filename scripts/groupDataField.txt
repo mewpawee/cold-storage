@@ -1,0 +1,7 @@
+_id
+date
+dateString
+devices
+group
+lat
+lng

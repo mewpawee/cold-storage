@@ -1,0 +1,7 @@
+_id
+company
+groups
+mapper
+password
+role
+username
