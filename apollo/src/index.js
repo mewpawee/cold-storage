@@ -1,8 +1,8 @@
 import { ApolloServer, AuthenticationError } from "apollo-server-express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import cors from 'cors';
-import express from 'express';
+import cors from "cors";
+import express from "express";
 const db_username = process.env.DB_USERNAME;
 const db_password = process.env.DB_PASSWORD;
 const db_port = process.env.DB_PORT;
@@ -31,9 +31,9 @@ app.use(cors());
 const getUser = async (req) => {
   var token = req.headers["token"];
   if (token) {
-    if(token.startsWith('Bearer ')){
+    if (token.startsWith("Bearer ")) {
       token = token.slice(7, token.length).trimLeft();
-    }else{
+    } else {
       throw new AuthenticationError("can't find Bearer");
     }
     try {
@@ -52,7 +52,7 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     if (req) {
       const me = await getUser(req);
-      
+
       return {
         me,
       };
@@ -60,7 +60,11 @@ const server = new ApolloServer({
   },
 });
 
-server.applyMiddleware({ app, path: '/graphql' });
+server.applyMiddleware({
+  app,
+  path: "/graphql",
+  bodyParserConfig: { limit: "600mb" },
+});
 
 // This `listen` method launches a web-server.  Existing apps
 // can utilize middleware options, which we'll discuss later.
