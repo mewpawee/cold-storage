@@ -97,7 +97,7 @@ export default {
         .sort({ date: -1 })
         .limit(limit)
         .exec();
-      console.log(startDate, endDate);
+      // console.log(startDate, endDate);
       return groupData;
     },
     deviceMapper: async (parent, { deviceUUID }, { me }) => {
