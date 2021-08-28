@@ -85,8 +85,8 @@ export default {
         return groupData;
       }
 
-      const start = moment(new Date(startDate)).utcOffset("+0700")
-      const end = moment(new Date(endDate)).utcOffset("+0700")
+      const start = moment(new Date(startDate)).utcOffset("+0700");
+      const end = moment(new Date(endDate)).utcOffset("+0700");
       const groupData = await GroupData.find({
         group: userGroup._id,
         date: {
@@ -115,18 +115,44 @@ export default {
   },
 
   Mutation: {
-    createUser: async (parent, { username, password, company }, info) => {
+    createAdmin: async (parent, { username, password, company }, info) => {
       const isCompany = await Company.findOne({ name: company });
       if (!isCompany) {
         await Company.create({ name: company });
+        const admin = await User.create({
+          username: username,
+          password: password,
+          role: "admin",
+          company: company,
+        });
+        return admin;
+      } else {
+        throw new AuthenticationError("This company already had an Admin");
       }
-      const user = await User.create({
+    },
+    createUser: async (parent, { username, password }, { me }, info) => {
+      if (!me || me.role != "admin") {
+        throw new AuthenticationError("createUser only allow for Admin");
+      }
+      const admin = await User.findById({ _id: me._id });
+      const newUser = await User.create({
         username: username,
         password: password,
         role: "user",
-        company: company,
+        company: admin.company,
       });
-      return user;
+      return newUser;
+    },
+    deleteUser: async (parent, { username }, { me }, info) => {
+      if (!me || me.role != "admin") {
+        throw new AuthenticationError("createUser only allow for Admin");
+      }
+      const admin = await User.findById({ _id: me._id });
+      const deleteUser = await User.findOneAndDelete({
+        username: username,
+        company: admin.company,
+      });
+      return deleteUser;
     },
     changeThreshold: async (
       parent,
@@ -154,12 +180,7 @@ export default {
         groupName: groupName,
       });
     },
-    addDeviceMapper: async (
-      parent,
-      { deviceUUID, deviceId },
-      { me },
-      info
-    ) => {
+    addDeviceMapper: async (parent, { deviceUUID, deviceId }, { me }, info) => {
       if (!me || me.role != "admin") {
         throw new AuthenticationError("You are not an admin");
       }

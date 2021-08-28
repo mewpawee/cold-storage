@@ -1,0 +1,4 @@
+_id,groups,maxThreshold,minThreshold,name
+ObjectId(60db90c0847c0a003cc42ac6),[],8,2,kmitl
+ObjectId(60e70309847c0a003cc43869),[],5,0,cold
+ObjectId(6122508cf49c40003ce9be4b),[],,,test

@@ -1,0 +1,10 @@
+_id,company,groups,mapper,password,role,username
+ObjectId(6037a2b76c4e56002a1971d1),haha,,,$2b$11$7R2dyKO8QjVYlN2rFe9ygejaS5uhO8aACab8HSuna74mk8SFZzSoW,user,paweemew
+ObjectId(604854b27b1388003c25d0aa),kmitl,[],,$2b$11$EWONr5e1QPU15JVXvmFGRu9dwxpS1qvIUlyX1l8u4dwAtRkXuBmHe,user,geranun
+ObjectId(604b3a2f7c0bc3003c4e0dde),,[],,$2b$11$VLXIu5RT/p8gjplWZFGAluryY3FEXgngXag6puhCJ9Ym3N8JBqwKG,,test123
+ObjectId(60db906e847c0a003cc42ac5),haha,,[],$2b$11$N/Wzo78bxfC9.HKY2EfaJemhEeAQxlHme59dfA83za1o0A3iLdsBu,user,te
+ObjectId(60db90c0847c0a003cc42ac7),kmitl,,[],$2b$11$QrJp44yOYobRmRMLNCxQA.FBjRIMi1z/rsbqUL6VM.f.PijX//Ule,user,kmi
+ObjectId(60db91d3847c0a003cc42ac8),kmitl,,[],$2b$11$28dm4TSnhhaJTs1x2B/VVO5f/ZqAc11X2R87Lq5QvxLuCtp4uqOnm,admin,admin
+ObjectId(60e70309847c0a003cc4386a),cold,,[],$2b$11$ijzjUwp/y6bb7XsnCWZOpOn2Rg3tnaX/9/yGrn.QHNdW5u3TRc00q,user,colduser
+ObjectId(60e70316847c0a003cc4386b),cold,,[],$2b$11$knUBinfDMdplqGtsK.cppOwQZ3tB6PjpoyR3PieLpkIJ6mvz9MVKW,admin,coldadmin
+ObjectId(61225096f49c40003ce9be4d),test,,,$2b$11$SV3nl0KIMFKCrTrxr0UTFe1cTnYTDSiYRsc3GPooR/uO7ln...K8S,admin,testuser

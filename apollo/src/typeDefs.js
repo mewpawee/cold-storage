@@ -65,7 +65,9 @@ export default gql`
   }
 
   type Mutation {
-    createUser(username: String!, password: String!, company: String!): User!
+    createAdmin(username: String!, password: String!, company: String!): User!
+    createUser(username: String!, password: String!): User!
+    deleteUser(username: String!): User!
     changeThreshold(minThreshold: Float, maxThreshold: Float): Company!
     addUserGroup(username: String!, groupName: String!): UserGroup!
     addGroupData(
