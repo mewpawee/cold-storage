@@ -103,3 +103,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.v-input__slot {
+  margin-bottom: 0px !important;
+}
+</style>
