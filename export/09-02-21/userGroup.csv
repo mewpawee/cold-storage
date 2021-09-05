@@ -1,0 +1,15 @@
+_id,data,deviceMapper,groupName,user
+ObjectId(6048a2e17910af0028660756),[],,BI12,kmitl
+ObjectId(604949d8fcef70002944de83),[],,BIO4,ObjectId(6037a2b76c4e56002a1971d1)
+ObjectId(604b3a4f7c0bc3003c4e0ddf),[],,BIO2,ObjectId(604b3a2f7c0bc3003c4e0dde)
+ObjectId(60b4cf6b0e6de2002a230746),[],,BI13,kmitl
+ObjectId(60b5586a0e6de2002a230749),[],,BI14,kmitl
+ObjectId(60b9e7180e6de2002a23074c),[],,BI2,kmitl
+ObjectId(60b9e9980e6de2002a230751),[],,BI1,kmitl
+ObjectId(60c1c0aefa61cd0029515c6e),[],,BI3,kmitl
+ObjectId(60c35cf7fa61cd0029515e95),[],,BI99,kmitl
+ObjectId(60c63b01de97430031a97a49),[],,BIO5,ObjectId(6037a2b76c4e56002a1971d1)
+ObjectId(60dac0679be74b003d5b4208),[],[],justtest,kmitl
+ObjectId(60e7364e0db4f0003df4ef87),[],[],justtest,cold
+ObjectId(60ec2bcd0db4f0003df4fe2b),[],[],TRUCK1,cold
+ObjectId(612260ddf49c40003ce9bed5),[],[],test1,test

@@ -5,9 +5,14 @@
     </v-btn> -->
     <v-app-bar-nav-icon @click.stop="leftDrawerOpen" class="d-lg-none" />
     <v-icon>mdi-snowflake-alert</v-icon>
-    <v-toolbar-title v-text="title" class="d-none d-md-flex" />
-    <v-row align="end" justify="center">
-      <v-col cols="6" align="center">
+    <v-toolbar-title class="d-none d-md-flex"
+      ><b>{{ title }}</b>
+    </v-toolbar-title>
+    <v-row align="center" justify="center" no-gutters>
+      <v-col cols="2" class="d-none d-md-flex">
+        <b>Select Group</b>
+      </v-col>
+      <v-col cols="4">
         <v-select
           v-model="selectedGroup"
           :items="groups"
