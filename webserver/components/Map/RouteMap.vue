@@ -14,6 +14,7 @@ export default {
     return {
       map: null,
       google: null,
+      filteredLocations: null,
     }
   },
   async mounted() {
@@ -32,14 +33,15 @@ export default {
       this.google = await loader.load()
     },
     initMap() {
+      this.filteredLocations = this.locations.filter(this.filterNoSignal)
       this.map = new this.google.maps.Map(this.$refs.map, {
-        center: this.locations[0],
+        center: this.filteredLocations[0],
         zoom: 7,
       })
     },
     addMarker() {
-      const start = this.locations[this.locations.length - 1]
-      const end = this.locations[0]
+      const start = this.filteredLocations[this.filteredLocations.length - 1]
+      const end = this.filteredLocations[0]
       const startMarker = new this.google.maps.Marker({
         position: start,
         label: 'S',
@@ -73,9 +75,8 @@ export default {
       return location.lat !== 0 && location.lng !== 0
     },
     drawRoute() {
-      const filterOut = this.locations.filter(this.filterNoSignal)
       const Path = new this.google.maps.Polyline({
-        path: filterOut,
+        path: this.filteredLocations,
         geodesic: true,
         strokeColor: '#FF0000',
         strokeOpacity: 1.0,
