@@ -157,7 +157,14 @@
           </v-menu>
         </div>
       </template> -->
-
+      <template #[`item.lat`]="{ item }">
+        <div v-if="item.lat == 0">GPS No Signal</div>
+        <div v-else>{{ item.lat }}</div>
+      </template>
+      <template #[`item.lng`]="{ item }">
+        <div v-if="item.lng == 0">GPS No Signal</div>
+        <div v-else>{{ item.lat }}</div>
+      </template>
       <template #[`item.date`]="{ item }">
         {{ item.dateString.split(', ')[0] }}
       </template>

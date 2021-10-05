@@ -69,9 +69,13 @@ export default {
         shouldFocus: false,
       })
     },
+    filterNoSignal(location) {
+      return location.lat !== 0 && location.lng !== 0
+    },
     drawRoute() {
+      const filterOut = this.locations.filter(this.filterNoSignal)
       const Path = new this.google.maps.Polyline({
-        path: this.locations,
+        path: filterOut,
         geodesic: true,
         strokeColor: '#FF0000',
         strokeOpacity: 1.0,
